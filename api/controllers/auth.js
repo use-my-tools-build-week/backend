@@ -32,7 +32,28 @@ router.post('/register', async (req, res) => {
   } else {
     return res
       .status(401)
-      .json({ message: 'Please provide username, email, and password' });
+      .json({ message: 'Please provide username, email, and password.' });
+  }
+});
+
+router.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  if (username && password) {
+    const user = await User.findByUsername(username);
+    try {
+      if (user && bcrypt.compareSync(password, user.password)) {
+        const token = generateToken(user);
+
+        return res.status(200).json({ token });
+      } else {
+        return res.status(401).json({ message: 'Invalid credentials' });
+      }
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  } else {
+    return res.status(401).json({ message: 'Username and password required.' });
   }
 });
 

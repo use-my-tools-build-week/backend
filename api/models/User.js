@@ -7,6 +7,11 @@ const findById = id =>
     .where({ id })
     .first();
 
+const findByUsername = username =>
+  db('users')
+    .where({ username })
+    .first();
+
 const insert = user =>
   db('users')
     .insert(user)
@@ -26,6 +31,7 @@ const remove = id =>
 module.exports = {
   find,
   findById,
+  findByUsername,
   insert,
   update,
   remove
