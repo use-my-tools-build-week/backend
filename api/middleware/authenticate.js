@@ -14,13 +14,13 @@ function authenticate(req, res, next) {
     jwt.verify(token, jwtKey, (err, decoded) => {
       if (err) return res.status(401).json(err);
 
-      req.decoded = decoded;
+      req.decoded = { ...decoded, subject: decoded.subject.toString() };
 
       next();
     });
   } else {
     return res.status(401).json({
-      error: 'No token provided, must be set on the Authorization Header',
+      error: 'No token provided, must be set on the Authorization Header'
     });
   }
 }
@@ -28,7 +28,7 @@ function authenticate(req, res, next) {
 function generateToken(user) {
   const payload = {
     subject: user.id,
-    username: user.username,
+    username: user.username
   };
 
   const options = {
@@ -36,4 +36,4 @@ function generateToken(user) {
   };
 
   return jwt.sign(payload, jwtKey, options);
-};
+}
