@@ -1,10 +1,13 @@
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
+const db = require('../../config/db_config');
 
 const server = require('../server');
 const jwtKey = require('../../config/secrets').jwtSecret;
 
 describe('POST /register', () => {
+  beforeEach(() => db('users').truncate());
+
   const validUser = {
     username: 'test_user',
     password: 'test_password',
@@ -13,7 +16,7 @@ describe('POST /register', () => {
 
   it('should respond with 201 and token on valid input', async () => {
     const response = await request(server)
-      .post('/register')
+      .post('/api/register')
       .send(validUser);
 
     const {
@@ -30,15 +33,15 @@ describe('POST /register', () => {
 
   it('should respond with 401 on invalid input', async () => {
     const response = await request(server)
-      .post('/register')
+      .post('/api/register')
       .send({ invalid: 'input' });
 
     expect(response.status).toBe(401);
   });
 
   it('should respond with 409 if username or email not unique', async () => {
-    await request(server).post('/register').send(validUser);
-    const response = await request(server).post('/register').send(validUser);
+    await request(server).post('/api/register').send(validUser);
+    const response = await request(server).post('/api/register').send(validUser);
 
     expect(response.status).toBe(409);
   });
