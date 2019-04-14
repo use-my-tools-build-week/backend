@@ -38,7 +38,9 @@ module.exports = {
     },
     pool: {
       afterCreate: (conn, cb) => {
-        conn.run('PRAGMA busy_timeout = 6000', cb);
+        conn.run('PRAGMA busy_timeout = 6000', () => {
+          conn.run('PRAGMA journal_mode=WAL', cb);
+        });
       }
     }
   },
