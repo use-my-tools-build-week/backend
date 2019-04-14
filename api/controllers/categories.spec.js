@@ -85,4 +85,38 @@ describe('categoriesController', () => {
       expect(response.status).toBe(409);
     });
   });
+
+  describe('GET /api/categories', () => {
+    it('should respond with status 200 and empty array if no results', async () => {
+      const { status, body: categories } = await request(server).get(
+        '/api/categories'
+      );
+
+      expect(status).toBe(200);
+      expect(categories).toEqual([]);
+    });
+
+    it('should limit results by name if given a search parameter', async () => {
+      const {
+        user: { token },
+        validCategory
+      } = await setup();
+
+      await request(server)
+        .post('/api/categories')
+        .set('Authorization', token)
+        .send(validCategory);
+
+      const { body: targetCategory } = await request(server)
+        .post('/api/categories')
+        .set('Authorization', token)
+        .send({ ...validCategory, name: 'other_name' });
+
+      const { body: categories } = await request(server).get(
+        `/api/categories?search=other_name`
+      );
+
+      expect(categories).toEqual([targetCategory]);
+    });
+  });
 });

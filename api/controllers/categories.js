@@ -26,16 +26,25 @@ router.post('/', authenticate, async (req, res) => {
       ) {
         return res
           .status(409)
-          .json({ message: 'Categoryname and Email must be unique.' });
+          .json({ message: 'Name must be unique.' });
       }
 
       return res.status(500).json(error);
     }
   } else {
-    return res
-      .status(401)
-      .json({ message: 'Please provide name.' });
+    return res.status(401).json({ message: 'Please provide name.' });
   }
+});
+
+router.get('/', async (req, res) => {
+  const {
+    query: { search }
+  } = req;
+
+  const categories = search
+    ? await Category.findByName(search)
+    : await Category.find();
+  return res.status(200).json(categories);
 });
 
 module.exports = router;

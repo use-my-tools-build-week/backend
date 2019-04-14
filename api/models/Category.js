@@ -7,10 +7,7 @@ const findById = id =>
     .where({ id })
     .first();
 
-const findByName = name =>
-  db('categories')
-    .where({ name })
-    .first();
+const findByName = name => db('categories').where('name', 'like', `%${name}%`);
 
 const insert = category =>
   db('categories')
@@ -36,4 +33,3 @@ module.exports = {
   update,
   remove
 };
-
