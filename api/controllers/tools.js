@@ -61,4 +61,24 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+router.put('/:id', authenticate, async (req, res) => {
+  const {
+    decoded: { subject: currentUserId },
+    params: { id }
+  } = req;
+
+  const tool = await Tool.findById(id);
+
+  if (currentUserId !== tool.user_id.toString()) {
+    return res.status(401).json({ message: 'Unauthorized.' });
+  }
+
+  try {
+    const updatedTool = await Tool.update(id, req.body);
+    return res.status(200).json(updatedTool);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;
