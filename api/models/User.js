@@ -14,7 +14,7 @@ const findByUsername = username =>
 
 const insert = user =>
   db('users')
-    .insert(user)
+    .insert(user, 'id')
     .then(ids => findById(ids[0]));
 
 const update = (id, changes) =>

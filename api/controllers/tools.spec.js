@@ -1,13 +1,10 @@
 const request = require('supertest');
+const knexCleaner = require('knex-cleaner');
 const db = require('../../config/db_config');
 
 const server = require('../server');
 
-beforeEach(async () => {
-  await db('categories').truncate();
-  await db('users').truncate();
-  await db('tools').truncate();
-});
+beforeEach(() => knexCleaner.clean(db));
 
 describe('toolsController', () => {
   const setup = async () => {

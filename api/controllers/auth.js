@@ -20,7 +20,7 @@ router.post('/register', async (req, res) => {
     } catch (error) {
       if (
         error.message &&
-        error.message.includes('SQLITE_CONSTRAINT: UNIQUE')
+        error.message.match(/unique/i)
       ) {
         return res
           .status(409)

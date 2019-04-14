@@ -11,7 +11,7 @@ const findByName = name => db('categories').where('name', 'like', `%${name}%`);
 
 const insert = category =>
   db('categories')
-    .insert(category)
+    .insert(category, 'id')
     .then(ids => findById(ids[0]));
 
 const update = (id, changes) =>

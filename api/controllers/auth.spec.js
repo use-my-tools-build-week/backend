@@ -1,12 +1,13 @@
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
-const db = require('../../config/db_config');
+const knexCleaner = require('knex-cleaner');
 
+const db = require('../../config/db_config');
 const server = require('../server');
 const jwtKey = require('../../config/secrets').jwtSecret;
 
 describe('authController', () => {
-  beforeEach(() => db('users').truncate());
+  beforeEach(() => knexCleaner.clean(db));
 
   const validUser = {
     username: 'test_user',

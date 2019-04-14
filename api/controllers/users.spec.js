@@ -1,9 +1,10 @@
 const request = require('supertest');
-const db = require('../../config/db_config');
+const knexCleaner = require('knex-cleaner');
 
+const db = require('../../config/db_config');
 const server = require('../server');
 
-beforeEach(() => db('users').truncate());
+beforeEach(() => knexCleaner.clean(db));
 
 describe('usersController', () => {
   const validUser = {

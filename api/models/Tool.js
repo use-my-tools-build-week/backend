@@ -11,7 +11,7 @@ const findByName = name => db('tools').where('name', 'like', `%${name}%`);
 
 const insert = tool =>
   db('tools')
-    .insert(tool)
+    .insert(tool, 'id')
     .then(ids => findById(ids[0]));
 
 const update = (id, changes) =>
