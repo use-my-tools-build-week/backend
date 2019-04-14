@@ -210,11 +210,62 @@ describe('toolsController', () => {
         .send(unauthorizedCreds);
 
       const { status } = await request(server)
-        .put(`/api/tools/1`)
+        .put(`/api/tools/${createdTool.id}`)
         .set('Authorization', unauthorizedToken)
         .send({ name: 'Something Else' });
 
       expect(status).toBe(401);
+    });
+  });
+
+  describe('DELETE /api/tools/:id', () => {
+    it('should respond with 401 when user_id does not match current user id', async () => {
+      const {
+        user: { token },
+        validTool
+      } = await setup();
+
+      const { body: createdTool } = await request(server)
+        .post('/api/tools')
+        .set('Authorization', token)
+        .send(validTool);
+
+      const unauthorizedCreds = {
+        username: 'test_user2',
+        password: 'test_password',
+        email: 'test_email2@test_email.ai'
+      };
+
+      const {
+        body: { token: unauthorizedToken }
+      } = await request(server)
+        .post('/api/register')
+        .send(unauthorizedCreds);
+
+      const { status } = await request(server)
+        .delete(`/api/tools/${createdTool.id}`)
+        .set('Authorization', unauthorizedToken);
+
+      expect(status).toBe(401);
+    });
+
+    it('should respond with 200 and deleted tool on success', async () => {
+      const {
+        user: { token },
+        validTool
+      } = await setup();
+
+      const { body: createdTool } = await request(server)
+        .post('/api/tools')
+        .set('Authorization', token)
+        .send(validTool);
+
+      const { status, body: deletedTool } = await request(server)
+        .delete(`/api/tools/${createdTool.id}`)
+        .set('Authorization', token);
+
+      expect(status).toBe(200);
+      expect(createdTool).toEqual(deletedTool);
     });
   });
 });
