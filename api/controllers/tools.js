@@ -44,4 +44,21 @@ router.get('/', async (req, res) => {
     : await Tool.find();
   return res.status(200).json(tools);
 });
+
+router.get('/:id', async (req, res) => {
+  const {
+    params: { id }
+  } = req;
+  try {
+    const tool = await Tool.findById(id);
+    if (tool) {
+      return res.status(200).json(tool);
+    } else {
+      return res.status(404).json({ message: 'Tool not found' });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;

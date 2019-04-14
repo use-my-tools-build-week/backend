@@ -129,4 +129,35 @@ describe('toolsController', () => {
       expect(tools).toEqual([targetTool]);
     });
   });
+
+  describe('GET /api/tools/:id', () => {
+    it('should respond with 200 and tool when tool found', async () => {
+      const {
+        user: { token },
+        validTool
+      } = await setup();
+
+      const {
+        body: createdTool
+      } = await request(server)
+        .post('/api/tools')
+        .set('Authorization', token)
+        .send(validTool);
+
+      const { body, status } = await request(server).get(
+        `/api/tools/${createdTool.id}`
+      );
+
+      expect(status).toBe(200);
+      expect(createdTool).toEqual(body);
+    });
+
+    it('should respond with 404 when no tool found', async () => {
+      const { status } = await request(server).get(
+        '/api/tools/anIDthatdoesntExist'
+      );
+
+      expect(status).toBe(404);
+    });
+  });
 });
