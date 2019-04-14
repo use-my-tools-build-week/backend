@@ -11,10 +11,10 @@ router.post('/register', async (req, res) => {
 
   if (user.username && user.password && user.email) {
     user.password = bcrypt.hashSync(user.password, 8);
-    const token = generateToken(user);
 
     try {
       const saved = await User.insert(user);
+      const token = generateToken(saved);
 
       return res.status(201).json({ ...saved, token });
     } catch (error) {
