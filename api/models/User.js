@@ -7,9 +7,9 @@ const findById = id =>
     .where({ id })
     .first();
 
-const findByUsername = username =>
+const findByEmail = email =>
   db('users')
-    .where({ username })
+    .where({ email })
     .first();
 
 const insert = user =>
@@ -31,7 +31,7 @@ const remove = id =>
 module.exports = {
   find,
   findById,
-  findByUsername,
+  findByEmail,
   insert,
   update,
   remove
