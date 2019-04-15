@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "test": "cross-env DB_ENV=testing jest --watch"
+    "test": "cross-env DB_ENV=testing jest --watch",
+    "postinstall": "node scripts/setup.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
