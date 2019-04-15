@@ -1,17 +1,34 @@
 const express = require('express');
+const { body, param, validationResult } = require('express-validator/check');
 
 const Tool = require('../models/Tool');
 const { authenticate } = require('../middleware/authenticate');
+const uniqueCheck = require('./validators/uniqueCheck');
 
 const router = express.Router();
 
-router.post('/', authenticate, async (req, res) => {
-  const {
-    decoded: { subject: currentUserId },
-    body: tool
-  } = req;
+router.post(
+  '/',
+  authenticate,
+  [
+    body('name')
+      .not()
+      .isEmpty()
+      .trim()
+      .custom(uniqueCheck(Tool, 'name'))
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
 
-  if (tool.name) {
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    const {
+      decoded: { subject: currentUserId },
+      body: tool
+    } = req;
+
     try {
       const saved = await Tool.insert({
         ...tool,
@@ -20,19 +37,10 @@ router.post('/', authenticate, async (req, res) => {
 
       return res.status(201).json(saved);
     } catch (error) {
-      if (
-        error.message &&
-        error.message.match(/unique/i)
-      ) {
-        return res.status(409).json({ message: 'Name must be unique.' });
-      }
-
-      return res.status(500).json(error);
+      return res.status(500).json({ errors: [{ msg: 'Server Error' }] });
     }
-  } else {
-    return res.status(401).json({ message: 'Please provide name.' });
   }
-});
+);
 
 router.get('/', async (req, res) => {
   const {
@@ -43,7 +51,13 @@ router.get('/', async (req, res) => {
   return res.status(200).json(tools);
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', [param('id').isNumeric()], async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
   const {
     params: { id }
   } = req;
@@ -52,32 +66,43 @@ router.get('/:id', async (req, res) => {
     if (tool) {
       return res.status(200).json(tool);
     } else {
-      return res.status(404).json({ message: 'Tool not found' });
+      return res.status(404).json({ errors: [{ msg: 'Tool not found' }] });
     }
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ errors: [{ msg: error.message }] });
   }
 });
 
-router.put('/:id', authenticate, async (req, res) => {
-  const {
-    decoded: { subject: currentUserId },
-    params: { id }
-  } = req;
+router.put(
+  '/:id',
+  authenticate,
+  [param('id').isNumeric()],
+  async (req, res) => {
+    const errors = validationResult(req);
 
-  const tool = await Tool.findById(id);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
 
-  if (currentUserId !== tool.user_id.toString()) {
-    return res.status(401).json({ message: 'Unauthorized.' });
+    const {
+      decoded: { subject: currentUserId },
+      params: { id }
+    } = req;
+
+    const tool = await Tool.findById(id);
+
+    if (currentUserId !== tool.user_id.toString()) {
+      return res.status(401).json({ errors: [{ msg: 'Unauthorized.' }] });
+    }
+
+    try {
+      const updatedTool = await Tool.update(id, req.body);
+      return res.status(200).json(updatedTool);
+    } catch (error) {
+      return res.status(500).json({ errors: [{ msg: error.message }] });
+    }
   }
-
-  try {
-    const updatedTool = await Tool.update(id, req.body);
-    return res.status(200).json(updatedTool);
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-});
+);
 
 router.delete('/:id', authenticate, async (req, res) => {
   const {
@@ -88,14 +113,14 @@ router.delete('/:id', authenticate, async (req, res) => {
   const tool = await Tool.findById(id);
 
   if (currentUserId !== tool.user_id.toString()) {
-    return res.status(401).json({ message: 'Unauthorized.' });
+    return res.status(401).json({ errors: [{ msg: 'Unauthorized.' }] });
   }
 
   try {
     await Tool.remove(id);
     return res.status(200).json(tool);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ errors: [{ msg: error.message }] });
   }
 });
 

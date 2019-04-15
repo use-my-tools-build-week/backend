@@ -10,7 +10,7 @@ describe('usersController', () => {
   const validUser = {
     username: 'test_user',
     password: 'test_password',
-    email: 'test_email@test_email.ai'
+    email: 'test_email@testemail.ai'
   };
 
   describe('GET /api/users', () => {
@@ -25,10 +25,13 @@ describe('usersController', () => {
   describe('GET /api/users/:id', () => {
     it('should respond with 200 and user when user found', async () => {
       const {
+        status: createStatus,
         body: { token, ...createdUser }
       } = await request(server)
         .post('/api/register')
         .send(validUser);
+
+      expect(createStatus).toBe(201);
 
       const { body, status } = await request(server).get(
         `/api/users/${createdUser.id}`
@@ -38,12 +41,12 @@ describe('usersController', () => {
       expect(createdUser).toEqual(body);
     });
 
-    it('should respond with 404 when no user found', async () => {
+    it('should respond with 422 when no user found', async () => {
       const { status } = await request(server).get(
         '/api/users/anIDthatdoesntExist'
       );
 
-      expect(status).toBe(404);
+      expect(status).toBe(422);
     });
   });
 
@@ -85,7 +88,7 @@ describe('usersController', () => {
       expect(updatedUser.username).toBe('Something Else');
     });
 
-    it('should respond with 401 when id does not match current user id', async () => {
+    it('should respond with 422 when id does not match current user id', async () => {
       const {
         body: { token }
       } = await login();
@@ -103,7 +106,7 @@ describe('usersController', () => {
         .set('Authorization', token)
         .send({ username: 'Something Else' });
 
-      expect(status).toBe(401);
+      expect(status).toBe(422);
     });
   });
 });

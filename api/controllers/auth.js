@@ -1,10 +1,10 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
-const { body, check, validationResult } = require('express-validator/check');
-const uniqueCheck = require('./validators/uniqueCheck');
+const { body, validationResult } = require('express-validator/check');
 
 const User = require('../models/User');
 const { generateToken } = require('../middleware/authenticate');
+const uniqueCheck = require('./validators/uniqueCheck');
 
 const router = express.Router();
 
@@ -61,7 +61,7 @@ router.post(
 
     const { username, password } = req.body;
     const user = await User.findByUsername(username);
-    ``;
+
     try {
       if (user && bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user);

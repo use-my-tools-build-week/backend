@@ -1,17 +1,34 @@
 const express = require('express');
+const { body, validationResult } = require('express-validator/check');
 
 const Category = require('../models/Category');
 const { authenticate } = require('../middleware/authenticate');
+const uniqueCheck = require('./validators/uniqueCheck');
 
 const router = express.Router();
 
-router.post('/', authenticate, async (req, res) => {
-  const {
-    decoded: { subject: currentUserId },
-    body: category
-  } = req;
+router.post(
+  '/',
+  authenticate,
+  [
+    body('name')
+      .not()
+      .isEmpty()
+      .trim()
+      .custom(uniqueCheck(Category, 'name'))
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
 
-  if (category.name) {
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    const {
+      decoded: { subject: currentUserId },
+      body: category
+    } = req;
+
     try {
       const saved = await Category.insert({
         ...category,
@@ -20,31 +37,24 @@ router.post('/', authenticate, async (req, res) => {
 
       return res.status(201).json(saved);
     } catch (error) {
-      if (
-        error.message &&
-        error.message.match(/unique/i)
-      ) {
-        return res
-          .status(409)
-          .json({ message: 'Name must be unique.' });
-      }
-
-      return res.status(500).json(error);
+      return res.status(500).json({ errors: [{ msg: 'Server Error' }] });
     }
-  } else {
-    return res.status(401).json({ message: 'Please provide name.' });
   }
-});
+);
 
 router.get('/', async (req, res) => {
   const {
     query: { search }
   } = req;
 
-  const categories = search
-    ? await Category.findByName(search)
-    : await Category.find();
-  return res.status(200).json(categories);
+  try {
+    const categories = search
+      ? await Category.findByName(search)
+      : await Category.find();
+    return res.status(200).json(categories);
+  } catch (error) {
+    return res.status(500).json({ errors: [{ msg: 'Server Error' }] });
+  }
 });
 
 module.exports = router;

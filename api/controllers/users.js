@@ -1,9 +1,8 @@
 const express = require('express');
+const router = express.Router();
+const { body, param, validationResult } = require('express-validator/check');
 
 const User = require('../models/User');
-
-const router = express.Router();
-
 const { authenticate } = require('../middleware/authenticate');
 
 router.get('/', async (req, res) => {
@@ -16,7 +15,13 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', [param('id').isNumeric()], async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
   const {
     params: { id }
   } = req;
@@ -32,22 +37,33 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.put('/:id', authenticate, async (req, res) => {
-  const {
-    decoded: { subject: currentUserId },
-    params: { id }
-  } = req;
+router.put(
+  '/:id',
+  authenticate,
+  [param('id').isNumeric()],
+  async (req, res) => {
+    const errors = validationResult(req);
 
-  if (currentUserId !== id) {
-    return res.status(401).json({ message: 'Unauthorized.' });
-  }
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
 
-  try {
-    const updatedUser = await User.update(id, req.body);
-    return res.status(200).json(updatedUser);
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
+    const {
+      decoded: { subject: currentUserId },
+      params: { id }
+    } = req;
+
+    if (currentUserId !== id) {
+      return res.status(401).json({ message: 'Unauthorized.' });
+    }
+
+    try {
+      const updatedUser = await User.update(id, req.body);
+      return res.status(200).json(updatedUser);
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
   }
-});
+);
 
 module.exports = router;

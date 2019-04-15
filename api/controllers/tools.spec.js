@@ -11,7 +11,7 @@ describe('toolsController', () => {
     const validUser = {
       username: 'test_user',
       password: 'test_password',
-      email: 'test_email@test_email.ai'
+      email: 'test_email@testemail.ai'
     };
 
     const { body: createdUser } = await request(server)
@@ -60,7 +60,7 @@ describe('toolsController', () => {
       expect(createdTool).toEqual(expect.objectContaining(validTool));
     });
 
-    it('should respond with 401 on invalid input', async () => {
+    it('should respond with 422 on invalid input', async () => {
       const {
         user: { token }
       } = await setup();
@@ -70,27 +70,9 @@ describe('toolsController', () => {
         .set('Authorization', token)
         .send({ invalid: 'input' });
 
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(422);
     });
 
-    it('should respond with 409 if username or email not unique', async () => {
-      const {
-        user: { token },
-        validTool
-      } = await setup();
-
-      await request(server)
-        .post('/api/tools')
-        .set('Authorization', token)
-        .send(validTool);
-
-      const response = await request(server)
-        .post('/api/tools')
-        .set('Authorization', token)
-        .send(validTool);
-
-      expect(response.status).toBe(409);
-    });
   });
 
   describe('GET /api/tools', () => {
@@ -145,12 +127,12 @@ describe('toolsController', () => {
       expect(createdTool).toEqual(body);
     });
 
-    it('should respond with 404 when no tool found', async () => {
+    it('should respond with 422 when no tool found', async () => {
       const { status } = await request(server).get(
         '/api/tools/anIDthatdoesntExist'
       );
 
-      expect(status).toBe(404);
+      expect(status).toBe(422);
     });
   });
 
@@ -197,7 +179,7 @@ describe('toolsController', () => {
       const unauthorizedCreds = {
         username: 'test_user2',
         password: 'test_password',
-        email: 'test_email2@test_email.ai'
+        email: 'test_email2@testemail.ai'
       };
 
       const {
@@ -230,7 +212,7 @@ describe('toolsController', () => {
       const unauthorizedCreds = {
         username: 'test_user2',
         password: 'test_password',
-        email: 'test_email2@test_email.ai'
+        email: 'test_email2@testemail.ai'
       };
 
       const {

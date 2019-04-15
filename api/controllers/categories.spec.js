@@ -11,7 +11,7 @@ describe('categoriesController', () => {
     const validUser = {
       username: 'test_user',
       password: 'test_password',
-      email: 'test_email@test_email.ai'
+      email: 'testemail@testemail.ai'
     };
 
     const { body: createdUser } = await request(server)
@@ -51,7 +51,7 @@ describe('categoriesController', () => {
       expect(createdCategory).toEqual(expect.objectContaining(validCategory));
     });
 
-    it('should respond with 401 on invalid input', async () => {
+    it('should respond with 422 on invalid input', async () => {
       const {
         user: { token }
       } = await setup();
@@ -61,10 +61,10 @@ describe('categoriesController', () => {
         .set('Authorization', token)
         .send({ invalid: 'input' });
 
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(422);
     });
 
-    it('should respond with 409 if username or email not unique', async () => {
+    it('should respond with 422 if username or email not unique', async () => {
       const {
         user: { token },
         validCategory
@@ -80,7 +80,7 @@ describe('categoriesController', () => {
         .set('Authorization', token)
         .send(validCategory);
 
-      expect(response.status).toBe(409);
+      expect(response.status).toBe(422);
     });
   });
 
