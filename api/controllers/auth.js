@@ -17,6 +17,7 @@ router.post(
       .custom(uniqueCheck(User, 'email')),
     body('password').isLength({ min: 5 }),
     body('username')
+      .optional()
       .not()
       .isEmpty()
       .trim()
@@ -46,8 +47,10 @@ router.post(
 router.post(
   '/login',
   [
-    body('password').isLength({ min: 5 }),
-    body('username')
+    body('email')
+      .isEmail()
+      .normalizeEmail(),
+    body('')
       .not()
       .isEmpty()
       .trim()
@@ -59,14 +62,14 @@ router.post(
       return res.status(422).json({ errors: errors.array() });
     }
 
-    const { username, password } = req.body;
-    const user = await User.findByUsername(username);
+    const { email, password } = req.body;
+    const user = await User.findByEmail(email);
 
     try {
       if (user && bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user);
 
-        return res.status(200).json({ token });
+        return res.status(200).json({ ...user, token });
       } else {
         return res
           .status(401)

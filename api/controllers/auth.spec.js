@@ -10,7 +10,6 @@ describe('authController', () => {
   beforeEach(async () => await knexCleaner.clean(db));
 
   const validUser = {
-    username: 'test_user',
     password: 'test_password',
     email: 'testemail@testemail.ai'
   };
@@ -30,7 +29,7 @@ describe('authController', () => {
       expect(token).toBeDefined();
 
       const decoded = await jwt.verify(token, jwtKey);
-      expect(decoded.username).toBe(validUser.username);
+      expect(decoded.email).toBe(validUser.email);
     });
 
     it('should respond with 422 on invalid input', async () => {
@@ -41,7 +40,7 @@ describe('authController', () => {
       expect(response.status).toBe(422);
     });
 
-    it('should respond with 422 if username or email not unique', async () => {
+    it('should respond with 422 if email or email not unique', async () => {
       await request(server)
         .post('/api/register')
         .send(validUser);
@@ -61,24 +60,26 @@ describe('authController', () => {
     });
 
     it('should respond with 200 and token on successful login', async () => {
+      const response = await request(server)
+        .post('/api/login')
+        .send({ email: validUser.email, password: validUser.password });
+
       const {
         body: { token },
         status
-      } = await request(server)
-        .post('/api/login')
-        .send({ username: validUser.username, password: validUser.password });
+      } = response;
 
       expect(status).toBe(200);
       expect(token).toBeDefined();
 
       const decoded = await jwt.verify(token, jwtKey);
-      expect(decoded.username).toBe(validUser.username);
+      expect(decoded.email).toBe(validUser.email);
     });
 
     it('should respond with 422 on bad credentials', async () => {
       const { status } = await request(server)
         .post('/api/login')
-        .send({ username: 'bad', password: 'info' });
+        .send({ email: 'bad', password: 'info' });
 
       expect(status).toBe(422);
     });

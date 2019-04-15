@@ -1,7 +1,7 @@
 exports.up = function(knex) {
   return knex.schema.createTable('categories', (tbl) => {
     tbl.increments();
-    tbl.timestamps();
+    tbl.timestamps(true, true);
     tbl.string('name', 128).notNullable().unique();
     tbl.text('image_url');
     tbl
