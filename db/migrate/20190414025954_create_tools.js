@@ -2,7 +2,7 @@ exports.up = function(knex) {
   return knex.schema
     .createTable('conditions', tbl => {
       tbl.increments();
-      tbl.timestamps();
+      tbl.timestamps(true, true);
       tbl
         .string('name', 128)
         .notNullable()
