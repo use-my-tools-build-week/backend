@@ -6,13 +6,17 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "test": "cross-env DB_ENV=testing jest --watch"
+    "test": "cross-env DB_ENV=testing jest --watch",
+    "postinstall": "node scripts/setup.js"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
+    "express-validator": "^5.3.1",
     "helmet": "^3.16.0",
+    "jsonwebtoken": "^8.5.1",
     "knex": "^0.16.5",
     "pg": "^7.9.0",
     "sqlite3": "^4.0.6"

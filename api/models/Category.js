@@ -1,27 +1,27 @@
 const db = require('../../config/db_config');
 
-const find = () => db('tools');
+const find = () => db('categories');
 
 const findById = id =>
-  db('tools')
+  db('categories')
     .where({ id })
     .first();
 
-const findByName = name => db('tools').where('name', 'like', `%${name}%`);
+const findByName = name => db('categories').where('name', 'like', `%${name}%`);
 
-const insert = tool =>
-  db('tools')
-    .insert(tool, 'id')
+const insert = category =>
+  db('categories')
+    .insert(category, 'id')
     .then(ids => findById(ids[0]));
 
 const update = (id, changes) =>
-  db('tools')
+  db('categories')
     .where({ id })
     .update(changes)
     .then(() => findById(id));
 
 const remove = id =>
-  db('tools')
+  db('categories')
     .where({ id })
     .del();
 
