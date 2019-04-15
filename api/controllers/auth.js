@@ -1,15 +1,35 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
+const { body, check, validationResult } = require('express-validator/check');
+const uniqueCheck = require('./validators/uniqueCheck');
 
 const User = require('../models/User');
 const { generateToken } = require('../middleware/authenticate');
 
 const router = express.Router();
 
-router.post('/register', async (req, res) => {
-  const user = req.body;
+router.post(
+  '/register',
+  [
+    body('email')
+      .isEmail()
+      .normalizeEmail()
+      .custom(uniqueCheck(User, 'email')),
+    body('password').isLength({ min: 5 }),
+    body('username')
+      .not()
+      .isEmpty()
+      .trim()
+      .custom(uniqueCheck(User, 'username'))
+  ],
+  async (req, res) => {
+    const user = req.body;
+    const errors = validationResult(req);
 
-  if (user.username && user.password && user.email) {
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
     user.password = bcrypt.hashSync(user.password, 8);
 
     try {
@@ -18,43 +38,44 @@ router.post('/register', async (req, res) => {
 
       return res.status(201).json({ ...saved, token });
     } catch (error) {
-      if (
-        error.message &&
-        error.message.match(/unique/i)
-      ) {
-        return res
-          .status(409)
-          .json({ message: 'Username and Email must be unique.' });
-      }
-
-      return res.status(500).json(error);
+      return res.status(500).json({ errors: [{ msg: 'Server Error' }] });
     }
-  } else {
-    return res
-      .status(401)
-      .json({ message: 'Please provide username, email, and password.' });
   }
-});
+);
 
-router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
+router.post(
+  '/login',
+  [
+    body('password').isLength({ min: 5 }),
+    body('username')
+      .not()
+      .isEmpty()
+      .trim()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
 
-  if (username && password) {
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    const { username, password } = req.body;
     const user = await User.findByUsername(username);
+    ``;
     try {
       if (user && bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user);
 
         return res.status(200).json({ token });
       } else {
-        return res.status(401).json({ message: 'Invalid credentials' });
+        return res
+          .status(401)
+          .json({ errors: [{ msg: 'Invalid credentials.' }] });
       }
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return res.status(500).json({ errors: [{ msg: 'Server Error' }] });
     }
-  } else {
-    return res.status(401).json({ message: 'Username and password required.' });
   }
-});
+);
 
 module.exports = router;

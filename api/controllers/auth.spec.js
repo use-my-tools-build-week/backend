@@ -7,12 +7,12 @@ const server = require('../server');
 const jwtKey = require('../../config/secrets').jwtSecret;
 
 describe('authController', () => {
-  beforeEach(() => knexCleaner.clean(db));
+  beforeEach(async () => await knexCleaner.clean(db));
 
   const validUser = {
     username: 'test_user',
     password: 'test_password',
-    email: 'test_email@test_email.ai'
+    email: 'testemail@testemail.ai'
   };
 
   describe('POST /register', () => {
@@ -33,15 +33,15 @@ describe('authController', () => {
       expect(decoded.username).toBe(validUser.username);
     });
 
-    it('should respond with 401 on invalid input', async () => {
+    it('should respond with 422 on invalid input', async () => {
       const response = await request(server)
         .post('/api/register')
         .send({ invalid: 'input' });
 
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(422);
     });
 
-    it('should respond with 409 if username or email not unique', async () => {
+    it('should respond with 422 if username or email not unique', async () => {
       await request(server)
         .post('/api/register')
         .send(validUser);
@@ -49,7 +49,7 @@ describe('authController', () => {
         .post('/api/register')
         .send(validUser);
 
-      expect(response.status).toBe(409);
+      expect(response.status).toBe(422);
     });
   });
 
@@ -75,12 +75,12 @@ describe('authController', () => {
       expect(decoded.username).toBe(validUser.username);
     });
 
-    it('should respond with 401 on bad credentials', async () => {
+    it('should respond with 422 on bad credentials', async () => {
       const { status } = await request(server)
         .post('/api/login')
         .send({ username: 'bad', password: 'info' });
 
-      expect(status).toBe(401);
+      expect(status).toBe(422);
     });
   });
 });
