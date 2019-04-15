@@ -35,13 +35,6 @@ module.exports = {
     },
     seeds: {
       directory: './db/seeds'
-    },
-    pool: {
-      afterCreate: (conn, cb) => {
-        conn.run('PRAGMA busy_timeout = 6000', () => {
-          conn.run('PRAGMA journal_mode=WAL', cb);
-        });
-      }
     }
   },
 
