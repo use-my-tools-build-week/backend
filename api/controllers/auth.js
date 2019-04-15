@@ -69,7 +69,7 @@ router.post(
       if (user && bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user);
 
-        return res.status(200).json({ token });
+        return res.status(200).json({ ...user, token });
       } else {
         return res
           .status(401)
