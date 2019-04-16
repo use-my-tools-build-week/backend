@@ -80,7 +80,7 @@ Creates a tool
   **Example Body**
   ```json
   {
-    name: "test tool"
+    "name": "test tool"
   }
   ```
 
@@ -171,7 +171,7 @@ Updates a tool
   **Example Body**
   ```json
   {
-    name: "test tool2"
+    "name": "test tool2"
   }
   ```
 
