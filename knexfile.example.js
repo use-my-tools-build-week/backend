@@ -10,7 +10,7 @@ const localPg = {
 
 const productionDbConnection = process.env.DATABASE_URL || localPg
 
-module.exports = {
+module.exports = process.env.KNEXFILE_PATH || {
 
   development: {
     client: 'sqlite3',
