@@ -44,10 +44,10 @@ router.post(
 
 router.get('/', async (req, res) => {
   const {
-    query: { search }
+    query: { search, limit, page }
   } = req;
 
-  const tools = search ? await Tool.findByName(search) : await Tool.find();
+  const tools = search ? await Tool.findByName(search, limit, page) : await Tool.find(limit, page);
   return res.status(200).json(tools);
 });
 
@@ -92,7 +92,7 @@ router.put(
     const tool = await Tool.findById(id);
 
     if (currentUserId !== tool.user_id) {
-      return res.status(401).json({ errors: [{ msg: 'Unauthorized.' }] });
+      return res.status(401).json({ errors: [{ msg: 'Unauthorized' }] });
     }
 
     try {
@@ -113,7 +113,7 @@ router.delete('/:id', authenticate, async (req, res) => {
   const tool = await Tool.findById(id);
 
   if (currentUserId !== tool.user_id) {
-    return res.status(401).json({ errors: [{ msg: 'Unauthorized.' }] });
+    return res.status(401).json({ errors: [{ msg: 'Unauthorized' }] });
   }
 
   try {

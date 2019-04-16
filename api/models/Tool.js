@@ -1,13 +1,20 @@
 const db = require('../../config/db_config');
 
-const find = () => db('tools');
+const find = (limit = 100, page = 1) =>
+  db('tools')
+    .limit(limit)
+    .offset(page * limit);
 
 const findById = id =>
   db('tools')
     .where({ id })
     .first();
 
-const findByName = name => db('tools').where('name', 'like', `%${name}%`);
+const findByName = (name, limit = 100, page = 0) =>
+  db('tools')
+    .where('name', 'like', `%${name}%`)
+    .limit(limit)
+    .offset(page * limit);
 
 const insert = tool =>
   db('tools')
