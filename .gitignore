@@ -31,3 +31,4 @@ yarn-error.log*
 
 # knexfile
 knexfile.js
+knexfile.local.js

@@ -1,7 +1,12 @@
 const express = require('express');
-const { body, param, validationResult } = require('express-validator/check');
+const {
+  oneOf,
+  body,
+  param,
+  validationResult
+} = require('express-validator/check');
 
-const Tool = require('../models/Tool');
+const Review = require('../models/Review');
 const { authenticate } = require('../middleware/authenticate');
 const uniqueCheck = require('./validators/uniqueCheck');
 
@@ -11,12 +16,24 @@ router.post(
   '/',
   authenticate,
   [
-    body('name')
+    body('tool_id')
       .not()
       .isEmpty()
-      .trim()
-      .custom(uniqueCheck(Tool, 'name'))
+      .isInt()
   ],
+  oneOf(
+    [
+      body('message')
+        .not()
+        .isEmpty()
+        .trim(),
+      body('score')
+        .not()
+        .isEmpty()
+        .toInt()
+    ],
+    'Requires at least one of [message, score] to be present]'
+  ),
   async (req, res) => {
     const errors = validationResult(req);
 
@@ -26,12 +43,12 @@ router.post(
 
     const {
       decoded: { subject: currentUserId },
-      body: tool
+      body: review
     } = req;
 
     try {
-      const saved = await Tool.insert({
-        ...tool,
+      const saved = await Review.insert({
+        ...review,
         user_id: currentUserId
       });
 
@@ -47,8 +64,10 @@ router.get('/', async (req, res) => {
     query: { search }
   } = req;
 
-  const tools = search ? await Tool.findByName(search) : await Tool.find();
-  return res.status(200).json(tools);
+  const reviews = search
+    ? await Review.findByName(search)
+    : await Review.find();
+  return res.status(200).json(reviews);
 });
 
 router.get('/:id', [param('id').isNumeric()], async (req, res) => {
@@ -62,11 +81,11 @@ router.get('/:id', [param('id').isNumeric()], async (req, res) => {
     params: { id }
   } = req;
   try {
-    const tool = await Tool.findById(id);
-    if (tool) {
-      return res.status(200).json(tool);
+    const review = await Review.findById(id);
+    if (review) {
+      return res.status(200).json(review);
     } else {
-      return res.status(404).json({ errors: [{ msg: 'Tool not found' }] });
+      return res.status(404).json({ errors: [{ msg: 'Review not found' }] });
     }
   } catch (error) {
     return res.status(500).json({ errors: [{ msg: error.message }] });
@@ -76,7 +95,25 @@ router.get('/:id', [param('id').isNumeric()], async (req, res) => {
 router.put(
   '/:id',
   authenticate,
-  [param('id').isNumeric()],
+  [
+    body('tool_id')
+      .not()
+      .isEmpty()
+      .isInt()
+  ],
+  oneOf(
+    [
+      body('message')
+        .not()
+        .isEmpty()
+        .trim(),
+      body('score')
+        .not()
+        .isEmpty()
+        .toInt()
+    ],
+    'Requires at least one of [message, score] to be present]'
+  ),
   async (req, res) => {
     const errors = validationResult(req);
 
@@ -89,15 +126,15 @@ router.put(
       params: { id }
     } = req;
 
-    const tool = await Tool.findById(id);
+    const review = await Review.findById(id);
 
-    if (currentUserId !== tool.user_id) {
+    if (currentUserId !== review.user_id) {
       return res.status(401).json({ errors: [{ msg: 'Unauthorized.' }] });
     }
 
     try {
-      const updatedTool = await Tool.update(id, req.body);
-      return res.status(200).json(updatedTool);
+      const updatedReview = await Review.update(id, req.body);
+      return res.status(200).json(updatedReview);
     } catch (error) {
       return res.status(500).json({ errors: [{ msg: error.message }] });
     }
@@ -110,15 +147,15 @@ router.delete('/:id', authenticate, async (req, res) => {
     params: { id }
   } = req;
 
-  const tool = await Tool.findById(id);
+  const review = await Review.findById(id);
 
-  if (currentUserId !== tool.user_id) {
+  if (currentUserId !== review.user_id) {
     return res.status(401).json({ errors: [{ msg: 'Unauthorized.' }] });
   }
 
   try {
-    await Tool.remove(id);
-    return res.status(200).json(tool);
+    await Review.remove(id);
+    return res.status(200).json(review);
   } catch (error) {
     return res.status(500).json({ errors: [{ msg: error.message }] });
   }
