@@ -44,11 +44,12 @@ module.exports = {
     client: 'pg',
     connection: productionDbConnection,
     migrations: {
-      directory: './data/migrations'
+      directory: './db/migrate'
     },
     seeds: {
-      directory: './data/seeds'
-    }
+      directory: './db/seeds'
+    },
+    ssl: true
   }
 
 };
