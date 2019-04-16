@@ -146,3 +146,132 @@ Generates an Authentication token given valid email and password.
       ]
     }
     ```
+
+**Tools Index**
+----
+Responds with an array of tools
+
+* **URL**
+
+  /tools
+
+* **Method:**
+
+  `GET`
+
+* **URL Params**
+
+  **Optional:**
+  ```
+  search=[string of search terms]
+  ```
+
+  **Example**
+  ```
+  /tools?search=some+tool
+  ```
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:**
+    ```json
+    [
+      {
+          "id": 1075,
+          "created_at": "2019-04-16T18:29:47.659Z",
+          "updated_at": "2019-04-16T18:29:47.659Z",
+          "name": "Awesome Soft Gloves",
+          "image_url": "http://lorempixel.com/400/400/technics",
+          "user_id": 919,
+          "category_id": 41,
+          "condition_id": 14
+      },
+    }
+    ```
+
+**Create Tool**
+----
+Creates a tool
+
+* **URL**
+
+  /tools
+
+* **Method:**
+
+  `POST`
+
+* **Headers**
+
+  **Required:**
+  ```
+  Authorization=[string, valid token]
+  ```
+
+* **Data Params**
+
+  **Required:**
+  ```
+  name=[string]
+  ```
+
+  **Optional:**
+  ```
+  image_url=[string, url]
+  category_id=[integer]
+  condition_id=[integer]
+  ```
+
+  **Example Body**
+  ```json
+  {
+    name="test tool"
+  }
+  ```
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:**
+    ```json
+    {
+      "id": 2075,
+      "created_at": "2019-04-16T19:46:07.532Z",
+      "updated_at": "2019-04-16T19:46:07.532Z",
+      "name": "test tool",
+      "image_url": null,
+      "user_id": 802,
+      "category_id": null,
+      "condition_id": null
+    }
+    ```
+
+* **Error Response:**
+
+  * **Code:** 401 UNAUTHORIZED <br />
+    **Content:**
+    ```json
+    {
+      "errors": [
+         {
+             "msg": "Invalid credentials."
+         }
+      ]
+    }
+    ```
+
+  * **Code:** 422 UNPROCESSABLE ENTITY <br />
+    **Content:**
+    ```json
+    {
+      "errors": [
+        {
+          "location": "body",
+          "param": "name",
+          "value": "test tool",
+          "msg": "name already in use"
+        }
+      ]
+    }
+    ```
