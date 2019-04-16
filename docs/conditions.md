@@ -84,7 +84,7 @@ Creates a condition
   **Example Body**
   ```json
   {
-    name="test condition"
+    name: "test condition"
   }
   ```
 

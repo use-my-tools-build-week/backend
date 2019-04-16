@@ -84,7 +84,7 @@ Creates a category
   **Example Body**
   ```json
   {
-    name="test category"
+    name: "test category"
   }
   ```
 

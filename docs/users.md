@@ -69,7 +69,7 @@ Updates a user
   **Example Body**
   ```json
   {
-    firstname="test user2"
+    firstname: "test user2"
   }
   ```
 
