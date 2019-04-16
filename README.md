@@ -365,3 +365,64 @@ Updates a tool
       ]
     }
     ```
+
+**Show Tool**
+----
+Responds with one tool including reviews and loan requests
+
+* **URL**
+
+  /tools/:tool_id
+
+  **Example**
+
+  `/tools/1`
+
+* **Method:**
+
+  `GET`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:**
+    ```json
+    {
+      "id": 2076,
+      "created_at": "2019-04-16T20:02:21.071Z",
+      "updated_at": "2019-04-16T20:02:21.071Z",
+      "name": "test tool2",
+      "image_url": null,
+      "user_id": 802,
+      "category_id": null,
+      "condition_id": null
+    }
+    ```
+* **Error Response:**
+
+  * **Code:** 404 NOT FOUND <br />
+    **Content:**
+    ```json
+    {
+      "errors": [
+         {
+             "msg": "Tool not found"
+         }
+      ]
+    }
+    ```
+
+  * **Code:** 422 UNPROCESSABLE ENTITY <br />
+    **Content:**
+    ```json
+    {
+      "errors": [
+        {
+          "location": "params",
+          "param": "id",
+          "value": "test",
+          "msg": "Invalid value"
+        }
+      ]
+    }
+    ```
