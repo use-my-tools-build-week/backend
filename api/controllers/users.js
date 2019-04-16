@@ -26,7 +26,7 @@ router.get('/:id', [param('id').isNumeric()], async (req, res) => {
     params: { id }
   } = req;
   try {
-    const user = await User.findById(id);
+    const { password: omit, ...user } = await User.findById(id);
     if (user) {
       return res.status(200).json(user);
     } else {
@@ -40,7 +40,11 @@ router.get('/:id', [param('id').isNumeric()], async (req, res) => {
 router.put(
   '/:id',
   authenticate,
-  [param('id').isNumeric().toInt()],
+  [
+    param('id')
+      .isNumeric()
+      .toInt()
+  ],
   async (req, res) => {
     const errors = validationResult(req);
 
@@ -58,7 +62,10 @@ router.put(
     }
 
     try {
-      const updatedUser = await User.update(id, req.body);
+      const { password: omit, ...updatedUser } = await User.update(
+        id,
+        req.body
+      );
       return res.status(200).json(updatedUser);
     } catch (error) {
       return res.status(500).json({ error: error.message });

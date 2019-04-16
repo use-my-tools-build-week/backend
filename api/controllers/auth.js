@@ -34,7 +34,7 @@ router.post(
     user.password = bcrypt.hashSync(user.password, 8);
 
     try {
-      const saved = await User.insert(user);
+      const { password: omit, ...saved } = await User.insert(user);
       const token = generateToken(saved);
 
       return res.status(201).json({ ...saved, token });
@@ -68,6 +68,7 @@ router.post(
     try {
       if (user && bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user);
+        const {password: omit, ...userWithoutPassword} = user;
 
         return res.status(200).json({ ...user, token });
       } else {
