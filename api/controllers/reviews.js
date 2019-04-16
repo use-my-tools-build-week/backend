@@ -8,7 +8,6 @@ const {
 
 const Review = require('../models/Review');
 const { authenticate } = require('../middleware/authenticate');
-const uniqueCheck = require('./validators/uniqueCheck');
 
 const router = express.Router();
 
@@ -58,17 +57,6 @@ router.post(
     }
   }
 );
-
-router.get('/', async (req, res) => {
-  const {
-    query: { search }
-  } = req;
-
-  const reviews = search
-    ? await Review.findByName(search)
-    : await Review.find();
-  return res.status(200).json(reviews);
-});
 
 router.get('/:id', [param('id').isNumeric()], async (req, res) => {
   const errors = validationResult(req);
