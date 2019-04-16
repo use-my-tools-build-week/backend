@@ -91,7 +91,7 @@ router.put(
 
     const tool = await Tool.findById(id);
 
-    if (currentUserId !== tool.user_id.toString()) {
+    if (currentUserId !== tool.user_id) {
       return res.status(401).json({ errors: [{ msg: 'Unauthorized.' }] });
     }
 
@@ -112,7 +112,7 @@ router.delete('/:id', authenticate, async (req, res) => {
 
   const tool = await Tool.findById(id);
 
-  if (currentUserId !== tool.user_id.toString()) {
+  if (currentUserId !== tool.user_id) {
     return res.status(401).json({ errors: [{ msg: 'Unauthorized.' }] });
   }
 

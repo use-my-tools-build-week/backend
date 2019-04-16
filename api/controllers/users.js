@@ -40,7 +40,7 @@ router.get('/:id', [param('id').isNumeric()], async (req, res) => {
 router.put(
   '/:id',
   authenticate,
-  [param('id').isNumeric()],
+  [param('id').isNumeric().toInt()],
   async (req, res) => {
     const errors = validationResult(req);
 
