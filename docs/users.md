@@ -20,16 +20,25 @@ Responds with an array of users
     ```json
     [
       {
-        "id": 801,
-        "created_at": "2019-04-16T18:29:47.584Z",
-        "updated_at": "2019-04-16T18:29:47.584Z",
-        "firstname": "Montana",
-        "lastname": "Hand",
-        "username": "Montana.Hand",
-        "email": "test0@test.com",
-        "address": "4794 Jayde Rapids Crossing West Everardo NY",
-        "loan_range": 72
-      },
+        "total": 200,
+        "per_page": "1",
+        "offset": 0,
+        "to": 1,
+        "last_page": 200,
+        "current_page": 1,
+        "from": 0,
+        "results": [
+          {
+            "id": 1,
+            "created_at": "2019-04-17T08:12:28.179Z",
+            "updated_at": "2019-04-17T08:12:28.179Z",
+            "firstname": "Maurine",
+            "lastname": "Rath",
+            "username": "Giuseppe_Jacobs",
+            "img_url": "https://s3.amazonaws.com/uifaces/faces/twitter/iduuck/128.jpg"
+          }
+        ]
+      }
     ]
     ```
 
@@ -47,7 +56,7 @@ Updates a user
 
 * **Method:**
 
-  `POST`
+  `PUT`
 
 * **Headers**
 
@@ -64,12 +73,14 @@ Updates a user
   lastname=[string]
   loan_range=[integer]
   address=[address string]
+  img_url=[string]
+  username=[string]
   ```
 
   **Example Body**
   ```json
   {
-    "firstname": "test user2"
+    "firstname": "testname"
   }
   ```
 
@@ -79,15 +90,16 @@ Updates a user
     **Content:**
     ```json
     {
-      "id": 801,
-      "created_at": "2019-04-16T18:29:47.584Z",
-      "updated_at": "2019-04-16T18:29:47.584Z",
-      "firstname": "Montana",
-      "lastname": "Hand",
-      "username": "test user2",
-      "email": "test0@test.com",
-      "address": "4794 Jayde Rapids Crossing West Everardo NY",
-      "loan_range": 72
+      "id": 4,
+      "created_at": "2019-04-17T08:12:28.179Z",
+      "updated_at": "2019-04-17T08:12:28.179Z",
+      "firstname": "Jeremie",
+      "lastname": "testname",
+      "username": "Emiliano_Kunze",
+      "email": "test3@test.com",
+      "address": "84786 Jillian Village Lodge Keonland KS",
+      "img_url": "https://s3.amazonaws.com/uifaces/faces/twitter/antongenkin/128.jpg",
+      "loan_range": 8
     }
     ```
 * **Error Response:**
@@ -141,15 +153,14 @@ Responds with one user including reviews and loan requests
     **Content:**
     ```json
     {
-      "id": 801,
-      "created_at": "2019-04-16T18:29:47.584Z",
-      "updated_at": "2019-04-16T18:29:47.584Z",
-      "firstname": "Montana",
-      "lastname": "Hand",
-      "username": "Montana.Hand",
-      "email": "test0@test.com",
-      "address": "4794 Jayde Rapids Crossing West Everardo NY",
-      "loan_range": 72
+      "id": 1,
+      "created_at": "2019-04-17T08:12:28.179Z",
+      "updated_at": "2019-04-17T08:12:28.179Z",
+      "firstname": "Maurine",
+      "lastname": "Rath",
+      "username": "Giuseppe_Jacobs",
+      "img_url": "https://s3.amazonaws.com/uifaces/faces/twitter/iduuck/128.jpg",
+      "tools": [array of tools TODO]
     }
     ```
 * **Error Response:**

@@ -65,7 +65,7 @@ router.put(
     }
 
     try {
-      const { password: omit, ...updatedUser } = await User.update(
+      const { password, ...updatedUser } = await User.update(
         id,
         req.body
       );
