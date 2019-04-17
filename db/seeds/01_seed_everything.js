@@ -16,8 +16,8 @@ exports.seed = async (knex, Promise) => {
   // create 100 known emails and passwords
   for (let i = 0; i < 100; i++) {
     users.push({
-      firstname: faker.name.findName().firstName,
-      lastname: faker.name.findName().lastName,
+      firstname: faker.name.firstName(),
+      lastname: faker.name.lastName(),
       email: `test${i}@test.com`,
       loan_range: faker.random.number({ min: 1, max: 100 }),
       address: [
