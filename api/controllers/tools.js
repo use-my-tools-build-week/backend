@@ -47,7 +47,9 @@ router.get('/', async (req, res) => {
     query: { search, limit, page }
   } = req;
 
-  const tools = search ? await Tool.findByName(search, limit, page) : await Tool.find(limit, page);
+  const tools = search
+    ? await Tool.findByName(search).paginate(limit, page)
+    : await Tool.find().paginate(limit, page);
   return res.status(200).json(tools);
 });
 

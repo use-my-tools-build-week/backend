@@ -18,7 +18,34 @@ describe('usersController', () => {
       const { body, status } = await request(server).get('/api/users');
 
       expect(status).toBe(200);
-      expect(body).toEqual([]);
+      expect(body.results).toEqual([]);
+    });
+
+    it('should limit and paginate results', async () => {
+      const createdUsers = [];
+
+      for (let i = 0; i < 4; i++) {
+        const res = await request(server)
+          .post('/api/register')
+          .send({
+            ...validUser,
+            username: `test_user${i}`,
+            email: `test_user${i}@email.com`
+          });
+
+        createdUsers.push(res.body);
+      }
+
+      expect(createdUsers).toHaveLength(4);
+
+      const { body: users } = await request(server).get(
+        `/api/users?limit=2&page=2`
+      );
+
+      expect(users.results.map(u => u.id)).toEqual([
+        createdUsers[2].id,
+        createdUsers[3].id
+      ]);
     });
   });
 
@@ -76,7 +103,9 @@ describe('usersController', () => {
       } = await login();
 
       const {
-        body: [knownUser]
+        body: {
+          results: [knownUser]
+        }
       } = await request(server).get('/api/users');
 
       const { body: updatedUser, status } = await request(server)

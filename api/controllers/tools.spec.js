@@ -72,7 +72,6 @@ describe('toolsController', () => {
 
       expect(response.status).toBe(422);
     });
-
   });
 
   describe('GET /api/tools', () => {
@@ -80,7 +79,7 @@ describe('toolsController', () => {
       const { status, body: tools } = await request(server).get('/api/tools');
 
       expect(status).toBe(200);
-      expect(tools).toEqual([]);
+      expect(tools.results).toEqual([]);
     });
 
     it('should limit results by name if given a search parameter', async () => {
@@ -103,7 +102,32 @@ describe('toolsController', () => {
         `/api/tools?search=other_name`
       );
 
-      expect(tools).toEqual([targetTool]);
+      expect(tools.results).toEqual([targetTool]);
+    });
+
+    it('should limit and paginate results', async () => {
+      const {
+        user: { token },
+        validTool
+      } = await setup();
+
+      const createdTools = [];
+      for (let i = 0; i < 4; i++) {
+        const res = await request(server)
+          .post('/api/tools')
+          .set('Authorization', token)
+          .send({...validTool, name: `tool${i}`});
+
+        createdTools.push(res.body);
+      }
+
+      expect(createdTools).toHaveLength(4);
+
+      const { body: tools } = await request(server).get(
+        `/api/tools?limit=2&page=2`
+      );
+
+      expect(tools.results).toEqual([createdTools[2], createdTools[3]]);
     });
   });
 

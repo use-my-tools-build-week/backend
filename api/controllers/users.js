@@ -7,7 +7,10 @@ const { authenticate } = require('../middleware/authenticate');
 
 router.get('/', async (req, res) => {
   try {
-    const users = await User.find();
+    const {
+      query: { page, limit }
+    } = req;
+    const users = await User.find().paginate(limit, page);
 
     return res.status(200).json(users);
   } catch (error) {
