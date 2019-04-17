@@ -18,6 +18,7 @@ exports.seed = async (knex, Promise) => {
     users.push({
       firstname: faker.name.firstName(),
       lastname: faker.name.lastName(),
+      img_url: faker.image.avatar(200, 200),
       email: `test${i}@test.com`,
       loan_range: faker.random.number({ min: 1, max: 100 }),
       address: [
@@ -36,6 +37,7 @@ exports.seed = async (knex, Promise) => {
     users.push({
       firstname: faker.name.firstName(),
       lastname: faker.name.lastName(),
+      img_url: faker.image.avatar(200, 200),
       email: faker.internet.email(),
       loan_range: faker.random.number({ min: 1, max: 100 }),
       address: [
@@ -56,7 +58,7 @@ exports.seed = async (knex, Promise) => {
     ['new', 'used', 'ancient'].map(name => ({
       name,
       user_id: randomItem(dbUsers).id,
-      image_url: faker.image.abstract(400, 400)
+      img_url: faker.image.abstract(400, 400)
     }))
   );
   const dbConditions = await knex('conditions');
@@ -75,7 +77,7 @@ exports.seed = async (knex, Promise) => {
     ].map(name => ({
       name,
       user_id: randomItem(dbUsers).id,
-      image_url: faker.image.abstract(400, 400)
+      img_url: faker.image.abstract(400, 400)
     }))
   );
   const dbCategories = await knex('categories');
@@ -97,7 +99,7 @@ exports.seed = async (knex, Promise) => {
       name: generateName(),
       category_id: randomItem(dbCategories).id,
       condition_id: randomItem(dbConditions).id,
-      image_url: faker.image.technics(400,400),
+      img_url: faker.image.technics(400,400),
       user_id: randomItem(dbUsers).id
     });
   }
@@ -107,8 +109,8 @@ exports.seed = async (knex, Promise) => {
   const randomFavorites = [];
   for(let i = 0; i < 500; i++) {
     randomFavorites.push({
-      user_id: randomItem(dbUsers).id,
-      target_user_id: randomItem(dbUsers).id
+      tool_id: randomItem(dbTools).id,
+      user_id: randomItem(dbUsers).id
     });
   }
   await knex.batchInsert('favorites', randomFavorites, 30 );
