@@ -107,19 +107,40 @@ Generates an Authentication token given valid email and password.
   * **Code:** 200 <br />
     **Content:**
     ```json
-    {
-      "id": 4,
-      "created_at": "2019-04-17T08:12:28.179Z",
-      "updated_at": "2019-04-17T08:12:28.179Z",
-      "firstname": "Jeremie",
-      "lastname": "testname",
-      "username": "Emiliano_Kunze",
-      "email": "test3@test.com",
-      "address": "84786 Jillian Village Lodge Keonland KS",
-      "img_url": "https://s3.amazonaws.com/uifaces/faces/twitter/antongenkin/128.jpg",
-      "loan_range": 8,
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0Ijo0LCJlbWFpbCI6InRlc3QzQHRlc3QuY29tIiwiaWF0IjoxNTU1NTIwODU1LCJleHAiOjE1NTU2MDcyNTV9.qXefdkG1WPqQKGBQbhwN4sZC785UOVPWYGV2ijDVJrA"
-    }
+      {
+        "id": 4,
+        "created_at": "2019-04-17T08:12:28.179Z",
+        "updated_at": "2019-04-17T08:12:28.179Z",
+        "firstname": "Jeremie",
+        "lastname": "testname",
+        "username": "Emiliano_Kunze",
+        "email": "test3@test.com",
+        "address": "84786 Jillian Village Lodge Keonland KS",
+        "img_url": "https://s3.amazonaws.com/uifaces/faces/twitter/antongenkin/128.jpg",
+        "loan_range": 8,
+        "token": "auth token",
+        "categories": [
+          {
+            "id": 1,
+            "created_at": "2019-04-17T08:12:28.234Z",
+            "updated_at": "2019-04-17T08:12:28.234Z",
+            "name": "Lawn and Garden",
+            "img_url": "http://lorempixel.com/400/400/abstract",
+            "blurb": "Make that yard beautiful!",
+            "user_id": 69
+          },
+        ],
+        "conditions": [
+          {
+            "id": 1,
+            "created_at": "2019-04-17T08:12:28.229Z",
+            "updated_at": "2019-04-17T08:12:28.229Z",
+            "name": "Excellent",
+            "img_url": "http://lorempixel.com/400/400/abstract",
+            "user_id": 39
+          },
+        ]
+      }
     ```
 
 * **Error Response:**

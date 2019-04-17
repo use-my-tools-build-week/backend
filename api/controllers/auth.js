@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs');
 const { body, validationResult } = require('express-validator/check');
 
 const User = require('../models/User');
+const Category = require('../models/Category');
+const Condition = require('../models/Condition');
 const { generateToken } = require('../middleware/authenticate');
 const uniqueCheck = require('./validators/uniqueCheck');
 
@@ -68,9 +70,16 @@ router.post(
     try {
       if (user && bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user);
-        const {password: omit, ...userWithoutPassword} = user;
+        const { password: omit, ...userWithoutPassword } = user;
 
-        return res.status(200).json({ ...userWithoutPassword, token });
+        return res
+          .status(200)
+          .json({
+            ...userWithoutPassword,
+            token,
+            categories: (await Category.find()),
+            conditions: (await Condition.find())
+          });
       } else {
         return res
           .status(401)
