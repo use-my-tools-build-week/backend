@@ -41,13 +41,8 @@ router.get('/:id', [param('id').isNumeric()], async (req, res) => {
 });
 
 router.put(
-  '/:id',
+  '/update_profile',
   authenticate,
-  [
-    param('id')
-      .isNumeric()
-      .toInt()
-  ],
   async (req, res) => {
     const errors = validationResult(req);
 
@@ -56,17 +51,12 @@ router.put(
     }
 
     const {
-      decoded: { subject: currentUserId },
-      params: { id }
+      decoded: { subject: currentUserId }
     } = req;
-
-    if (currentUserId !== id) {
-      return res.status(401).json({ message: 'Unauthorized.' });
-    }
 
     try {
       const { password, ...updatedUser } = await User.update(
-        id,
+        currentUserId,
         req.body
       );
       return res.status(200).json(updatedUser);
