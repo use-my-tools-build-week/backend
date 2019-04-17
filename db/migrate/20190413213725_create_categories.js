@@ -4,6 +4,7 @@ exports.up = function(knex) {
     tbl.timestamps(true, true);
     tbl.string('name', 128).notNullable().unique();
     tbl.text('img_url');
+    tbl.text('blurb')
     tbl
       .integer('user_id')
       .unsigned()

@@ -65,17 +65,15 @@ exports.seed = async (knex, Promise) => {
 
   await knex('categories').insert(
     [
-      'treework',
-      'lawncare',
-      'automotive',
-      'boating',
-      'cycling',
-      'construction',
-      'hvac',
-      'excavation',
-      'aviation'
-    ].map(name => ({
+      ['Lawn and Garden', 'Make that yard beautiful!'],
+      ['Power Tools', 'Work smarter, not harder'],
+      ['Hand Tools', 'True craftmanship'],
+      ['Air Tools', 'These tools don\'t blow'],
+      ['Automotive', 'Vroom Vroom!'],
+      ['Misc', 'Ladders, Vacuums, Etc'],
+    ].map(([ name, blurb ]) => ({
       name,
+      blurb,
       user_id: randomItem(dbUsers).id,
       img_url: faker.image.abstract(400, 400)
     }))
