@@ -76,7 +76,10 @@ describe('toolsController', () => {
 
   describe('GET /api/tools', () => {
     it('should respond with status 200 and empty array if no results', async () => {
-      const { status, body: tools } = await request(server).get('/api/tools');
+      const {
+        user: { token }
+      } = await setup();
+      const { status, body: tools } = await request(server).get('/api/tools').set('Authorization', token);
 
       expect(status).toBe(200);
       expect(tools.results).toEqual([]);
@@ -100,7 +103,7 @@ describe('toolsController', () => {
 
       const { body: tools } = await request(server).get(
         `/api/tools?search=other_name`
-      );
+      ).set('Authorization', token);
 
       expect(tools.results).toEqual([targetTool]);
     });
@@ -127,7 +130,7 @@ describe('toolsController', () => {
 
       const { body: tools } = await request(server).get(
         `/api/tools?limit=2&page=2`
-      );
+      ).set('Authorization', token);
 
       expect(tools.results).toEqual([createdTools[2], createdTools[3]]);
     });
@@ -147,16 +150,20 @@ describe('toolsController', () => {
 
       const { body, status } = await request(server).get(
         `/api/tools/${createdTool.id}`
-      );
+      ).set('Authorization', token);
 
       expect(status).toBe(200);
       expect(createdTool).toEqual(body);
     });
 
     it('should respond with 422 when no tool found', async () => {
+      const {
+        user: { token }
+      } = await setup();
+
       const { status } = await request(server).get(
         '/api/tools/anIDthatdoesntExist'
-      );
+      ).set('Authorization', token);
 
       expect(status).toBe(422);
     });

@@ -31,10 +31,10 @@ router.post(
     } = req;
 
     try {
-      const saved = await Tool.insert({
+      const saved = await Tool.insertWithFavorites({
         ...tool,
         user_id: currentUserId
-      });
+      }, currentUserId);
 
       return res.status(201).json(saved);
     } catch (error) {
@@ -44,38 +44,47 @@ router.post(
   }
 );
 
-router.get('/', async (req, res) => {
+router.get('/', authenticate, async (req, res) => {
   const {
-    query: { search, limit, page }
+    query: { search, limit, page },
+    decoded: { subject: currentUserId }
   } = req;
 
   const tools = search
-    ? await Tool.findByName(search).paginate(limit, page)
-    : await Tool.find().paginate(limit, page);
+    ? await Tool.findByNameWithFavorites(search, currentUserId).paginate(limit, page)
+    : await Tool.findWithFavorites(currentUserId).paginate(limit, page);
   return res.status(200).json(tools);
 });
 
-router.get('/:id', [param('id').isNumeric()], async (req, res) => {
-  const errors = validationResult(req);
+router.get(
+  '/:id',
+  authenticate,
+  [param('id').isNumeric()],
+  async (req, res) => {
+    const errors = validationResult(req);
 
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
-  }
-
-  const {
-    params: { id }
-  } = req;
-  try {
-    const tool = await Tool.findById(id);
-    if (tool) {
-      return res.status(200).json(tool);
-    } else {
-      return res.status(404).json({ errors: [{ msg: 'Tool not found' }] });
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
     }
-  } catch (error) {
-    return res.status(500).json({ errors: [{ msg: error.message }] });
+
+    const {
+      decoded: { subject: currentUserId },
+      params: { id }
+    } = req;
+
+    try {
+      const tool = await Tool.findByIdWithFavorites(id, currentUserId);
+      if (tool) {
+        return res.status(200).json(tool);
+      } else {
+        return res.status(404).json({ errors: [{ msg: 'Tool not found' }] });
+      }
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ errors: [{ msg: error.message }] });
+    }
   }
-});
+);
 
 router.put(
   '/:id',
@@ -93,7 +102,7 @@ router.put(
       params: { id }
     } = req;
 
-    const tool = await Tool.findById(id);
+    const tool = await Tool.findByIdWithFavorites(id, currentUserId);
 
     if (currentUserId !== tool.user_id) {
       return res.status(401).json({ errors: [{ msg: 'Unauthorized' }] });
@@ -114,7 +123,7 @@ router.delete('/:id', authenticate, async (req, res) => {
     params: { id }
   } = req;
 
-  const tool = await Tool.findById(id);
+  const tool = await Tool.findByIdWithFavorites(id, currentUserId);
 
   if (currentUserId !== tool.user_id) {
     return res.status(401).json({ errors: [{ msg: 'Unauthorized' }] });
