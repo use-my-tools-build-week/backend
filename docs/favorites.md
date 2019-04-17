@@ -65,7 +65,7 @@ Creates a favorite
   **Example Body**
   ```json
   {
-    target_user_id: "815"
+    "target_user_id": "815"
   }
   ```
 

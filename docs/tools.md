@@ -41,7 +41,7 @@ Responds with an array of tools
           "category_id": 41,
           "condition_id": 14
       },
-    }
+    ]
     ```
 
 **Create Tool**
