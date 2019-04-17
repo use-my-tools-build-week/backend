@@ -8,7 +8,8 @@ const find = () =>
       'updated_at',
       'firstname',
       'lastname',
-      'username'
+      'username',
+      'img_url'
     ]);
 
 const findById = id =>
