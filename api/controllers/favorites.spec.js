@@ -16,20 +16,28 @@ describe('favoritesController', () => {
         email: 'test_email@testemail.ai'
       });
 
-    const { body: target_user } = await request(server)
+    const { body: loaner } = await request(server)
       .post('/api/register')
       .send({
-        username: 'test_user2',
+        username: 'tool_owner',
         password: 'test_password',
-        email: 'test_email2@testemail.ai'
+        email: 'tool_owner@testemail.ai'
+      });
+
+    const { body: tool } = await request(server)
+      .post('/api/tools')
+      .set('Authorization', loaner.token)
+      .send({
+        name: 'test_tool',
+        user_id: loaner.id
       });
 
     const validFavorite = {
       user_id: user.id,
-      target_user_id: target_user.id
+      tool_id: tool.id
     };
 
-    return { user, target_user, validFavorite };
+    return { loaner, user, tool, validFavorite };
   };
 
   describe('POST /api/favorites', () => {
@@ -112,7 +120,7 @@ describe('favoritesController', () => {
         .post('/api/register')
         .send(unauthorizedCreds);
 
-      const { status, body } = await request(server)
+      const { status } = await request(server)
         .delete(`/api/favorites/${createdFavorite.id}`)
         .set('Authorization', unauthorizedToken);
 
@@ -137,7 +145,7 @@ describe('favoritesController', () => {
         .set('Authorization', token);
 
       expect(status).toBe(200);
-      expect(createdFavorite).toEqual(deletedFavorite);
+      expect(createdFavorite).toEqual(expect.objectContaining(deletedFavorite));
     });
   });
 });

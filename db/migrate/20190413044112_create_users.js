@@ -8,6 +8,7 @@ exports.up = function(knex) {
     tbl.string('password', 128).notNullable();
     tbl.string('email', 128).notNullable().unique();
     tbl.text('address');
+    tbl.text('img_url');
     tbl.integer('loan_range').unsigned();
   });
 };

@@ -10,7 +10,7 @@ router.post(
   '/',
   authenticate,
   [
-    body('target_user_id')
+    body('tool_id')
       .not()
       .isEmpty()
       .toInt()
@@ -67,16 +67,18 @@ router.delete(
       params: { id }
     } = req;
 
-    const favorite = await Favorite.findById(id);
-
-    if (currentUserId !== favorite.user_id) {
-      return res.status(401).json({ errors: [{ msg: 'Unauthorized.' }] });
-    }
-
     try {
-      await Favorite.remove(id);
-      return res.status(200).json(favorite);
-    } catch (error) {
+      const favorite = await Favorite.findById(id).where({user_id: currentUserId});
+      if (favorite) {
+        await Favorite.remove(id);
+        return res.status(200).json(favorite);
+      } else {
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'User favorite does not exist' }] });
+      }
+    } catch (err) {
+      console.log(err);
       return res.status(500).json({ errors: [{ msg: error.message }] });
     }
   }

@@ -72,15 +72,17 @@ describe('toolsController', () => {
 
       expect(response.status).toBe(422);
     });
-
   });
 
   describe('GET /api/tools', () => {
     it('should respond with status 200 and empty array if no results', async () => {
-      const { status, body: tools } = await request(server).get('/api/tools');
+      const {
+        user: { token }
+      } = await setup();
+      const { status, body: tools } = await request(server).get('/api/tools').set('Authorization', token);
 
       expect(status).toBe(200);
-      expect(tools).toEqual([]);
+      expect(tools.results).toEqual([]);
     });
 
     it('should limit results by name if given a search parameter', async () => {
@@ -101,9 +103,36 @@ describe('toolsController', () => {
 
       const { body: tools } = await request(server).get(
         `/api/tools?search=other_name`
-      );
+      ).set('Authorization', token);
 
-      expect(tools).toEqual([targetTool]);
+      expect(tools.results).toEqual([targetTool]);
+    });
+
+    it('should limit and paginate results, sorting by distance', async () => {
+      const {
+        user: { token },
+        validTool
+      } = await setup();
+
+      const createdTools = [];
+      for (let i = 0; i < 4; i++) {
+        const res = await request(server)
+          .post('/api/tools')
+          .set('Authorization', token)
+          .send({...validTool, name: `tool${i}`});
+
+        createdTools.push(res.body);
+      }
+
+      createdTools.sort((a,b) => a.distance - b.distance);
+
+      expect(createdTools).toHaveLength(4);
+
+      const { body: tools } = await request(server).get(
+        `/api/tools?limit=2&page=2`
+      ).set('Authorization', token);
+
+      expect(tools.results).toEqual([createdTools[2], createdTools[3]]);
     });
   });
 
@@ -121,16 +150,20 @@ describe('toolsController', () => {
 
       const { body, status } = await request(server).get(
         `/api/tools/${createdTool.id}`
-      );
+      ).set('Authorization', token);
 
       expect(status).toBe(200);
       expect(createdTool).toEqual(body);
     });
 
     it('should respond with 422 when no tool found', async () => {
+      const {
+        user: { token }
+      } = await setup();
+
       const { status } = await request(server).get(
         '/api/tools/anIDthatdoesntExist'
-      );
+      ).set('Authorization', token);
 
       expect(status).toBe(422);
     });

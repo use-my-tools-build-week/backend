@@ -27,6 +27,7 @@ Registers one user given a valid email address and password.
   lastname=[string, max-length: 128]
   loan_range=[number of miles]
   address=[string]
+  img_url=[string]
   ```
   **Example Body**
   ```json
@@ -42,15 +43,16 @@ Registers one user given a valid email address and password.
     **Content:**
     ```json
     {
-      "id": 1,
-      "created_at": "2019-04-15T19:39:35.396Z",
-      "updated_at": "2019-04-15T19:39:35.396Z",
-      "firstname": "first name",
-      "lastname": "last name",
-      "username": "user name",
+      "id": 4,
+      "created_at": "2019-04-17T08:12:28.179Z",
+      "updated_at": "2019-04-17T08:12:28.179Z",
+      "firstname": "Jeremie",
+      "lastname": "testname",
+      "username": "Emiliano_Kunze",
       "email": "valid@email.com",
-      "address": "address",
-      "loan_range": "range in miles",
+      "address": "84786 Jillian Village Lodge Keonland KS",
+      "img_url": "https://s3.amazonaws.com/uifaces/faces/twitter/antongenkin/128.jpg",
+      "loan_range": 8,
       "token": "tokenstring"
     }
     ```
@@ -106,16 +108,17 @@ Generates an Authentication token given valid email and password.
     **Content:**
     ```json
     {
-      "id": 1,
-      "created_at": "2019-04-15T20:27:48.555Z",
-      "updated_at": "2019-04-15T20:27:48.555Z",
-      "firstname": "firstname",
-      "lastname": "lastname",
-      "username": "username",
-      "email": "valid@email.com",
-      "address": "address",
-      "loan_range": "loan range",
-      "token": "token string"
+      "id": 4,
+      "created_at": "2019-04-17T08:12:28.179Z",
+      "updated_at": "2019-04-17T08:12:28.179Z",
+      "firstname": "Jeremie",
+      "lastname": "testname",
+      "username": "Emiliano_Kunze",
+      "email": "test3@test.com",
+      "address": "84786 Jillian Village Lodge Keonland KS",
+      "img_url": "https://s3.amazonaws.com/uifaces/faces/twitter/antongenkin/128.jpg",
+      "loan_range": 8,
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0Ijo0LCJlbWFpbCI6InRlc3QzQHRlc3QuY29tIiwiaWF0IjoxNTU1NTIwODU1LCJleHAiOjE1NTU2MDcyNTV9.qXefdkG1WPqQKGBQbhwN4sZC785UOVPWYGV2ijDVJrA"
     }
     ```
 

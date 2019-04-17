@@ -40,9 +40,9 @@ Creates a review
   **Example Body**
   ```json
   {
-    tool_id: 1,
-    message: "test review",
-    score: 5
+    "tool_id": 1,
+    "message": "test review",
+    "score": 5
   }
   ```
 
@@ -129,7 +129,7 @@ Updates a review
   **Example Body**
   ```json
   {
-    message="test review2"
+    "message": "test review2"
   }
   ```
 

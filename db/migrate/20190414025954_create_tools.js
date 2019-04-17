@@ -7,7 +7,7 @@ exports.up = function(knex) {
         .string('name', 128)
         .notNullable()
         .unique();
-      tbl.text('image_url');
+      tbl.text('img_url');
       tbl
         .integer('user_id')
         .unsigned()
@@ -19,12 +19,14 @@ exports.up = function(knex) {
     })
     .createTable('tools', tbl => {
       tbl.increments();
+      tbl.integer('distance');
+      tbl.text('description');
       tbl.timestamps(true, true);
       tbl
         .string('name', 128)
         .notNullable()
         .unique();
-      tbl.text('image_url');
+      tbl.text('img_url');
       tbl
         .integer('user_id')
         .unsigned()

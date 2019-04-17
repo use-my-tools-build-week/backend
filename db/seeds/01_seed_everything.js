@@ -16,8 +16,9 @@ exports.seed = async (knex, Promise) => {
   // create 100 known emails and passwords
   for (let i = 0; i < 100; i++) {
     users.push({
-      firstname: faker.name.findName().firstName,
-      lastname: faker.name.findName().lastName,
+      firstname: faker.name.firstName(),
+      lastname: faker.name.lastName(),
+      img_url: faker.image.avatar(200, 200),
       email: `test${i}@test.com`,
       loan_range: faker.random.number({ min: 1, max: 100 }),
       address: [
@@ -36,6 +37,7 @@ exports.seed = async (knex, Promise) => {
     users.push({
       firstname: faker.name.firstName(),
       lastname: faker.name.lastName(),
+      img_url: faker.image.avatar(200, 200),
       email: faker.internet.email(),
       loan_range: faker.random.number({ min: 1, max: 100 }),
       address: [
@@ -53,29 +55,27 @@ exports.seed = async (knex, Promise) => {
   const dbUsers = await knex('users');
 
   await knex('conditions').insert(
-    ['new', 'used', 'ancient'].map(name => ({
+    ['Excellent', 'Okay', 'Well Used', 'Ancient'].map(name => ({
       name,
       user_id: randomItem(dbUsers).id,
-      image_url: faker.image.abstract(400, 400)
+      img_url: faker.image.abstract(400, 400)
     }))
   );
   const dbConditions = await knex('conditions');
 
   await knex('categories').insert(
     [
-      'treework',
-      'lawncare',
-      'automotive',
-      'boating',
-      'cycling',
-      'construction',
-      'hvac',
-      'excavation',
-      'aviation'
-    ].map(name => ({
+      ['Lawn and Garden', 'Make that yard beautiful!'],
+      ['Power Tools', 'Work smarter, not harder'],
+      ['Hand Tools', 'True craftmanship'],
+      ['Air Tools', 'These tools don\'t blow'],
+      ['Automotive', 'Vroom Vroom!'],
+      ['Misc', 'Ladders, Vacuums, Etc'],
+    ].map(([ name, blurb ]) => ({
       name,
+      blurb,
       user_id: randomItem(dbUsers).id,
-      image_url: faker.image.abstract(400, 400)
+      img_url: faker.image.abstract(400, 400)
     }))
   );
   const dbCategories = await knex('categories');
@@ -93,10 +93,12 @@ exports.seed = async (knex, Promise) => {
   }
   for(let i = 0; i < 1000; i++) {
     randomTools.push({
+      distance: faker.random.number({ min: 1, max: 1000 }),
       name: generateName(),
+      description: faker.lorem.paragraph(),
       category_id: randomItem(dbCategories).id,
       condition_id: randomItem(dbConditions).id,
-      image_url: faker.image.technics(400,400),
+      img_url: faker.image.technics(400,400),
       user_id: randomItem(dbUsers).id
     });
   }
@@ -106,8 +108,8 @@ exports.seed = async (knex, Promise) => {
   const randomFavorites = [];
   for(let i = 0; i < 500; i++) {
     randomFavorites.push({
-      user_id: randomItem(dbUsers).id,
-      target_user_id: randomItem(dbUsers).id
+      tool_id: randomItem(dbTools).id,
+      user_id: randomItem(dbUsers).id
     });
   }
   await knex.batchInsert('favorites', randomFavorites, 30 );

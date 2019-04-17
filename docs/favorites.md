@@ -20,25 +20,31 @@ Responds with an array of favorites
     ```json
     [
       {
-        "id": 553,
-        "created_at": "2019-04-16T18:29:47.875Z",
-        "updated_at": "2019-04-16T18:29:47.875Z",
-        "user_id": 802,
-        "target_user_id": 815
-      },
-      {
-        "id": 994,
-        "created_at": "2019-04-16T18:29:47.875Z",
-        "updated_at": "2019-04-16T18:29:47.875Z",
-        "user_id": 802,
-        "target_user_id": 823
+        "id": 343,
+        "created_at": "2019-04-17T08:12:28.515Z",
+        "updated_at": "2019-04-17T08:12:28.515Z",
+        "user_id": 4,
+        "tool_id": 506,
+        "name": "Licensed Fresh Computer",
+        "distance": 163,
+        "tool_img_url": "http://lorempixel.com/400/400/technics",
+        "'condition'": "Ancient",
+        "condition_id": 4,
+        "condition_img_url": "http://lorempixel.com/400/400/abstract",
+        "category": "Lawn and Garden",
+        "category_id": 1,
+        "category_img_url": "http://lorempixel.com/400/400/abstract",
+        "loaner_id": 12,
+        "firstname": "Abdul",
+        "lastname": "Waelchi",
+        "loaner_img_url": "https://s3.amazonaws.com/uifaces/faces/twitter/m_kalibry/128.jpg"
       }
     ]
     ```
 
 **Create Favorite**
 ----
-Creates a favorite
+Creates a favorite if one doesn't exist
 
 * **URL**
 
@@ -59,13 +65,13 @@ Creates a favorite
 
   **Required:**
   ```
-  target_user_id=[integer]
+  tool_id=[integer]
   ```
 
   **Example Body**
   ```json
   {
-    target_user_id: "815"
+    "tool_id": "815"
   }
   ```
 
@@ -75,11 +81,24 @@ Creates a favorite
     **Content:**
     ```json
     {
-      "id": 553,
-      "created_at": "2019-04-16T18:29:47.875Z",
-      "updated_at": "2019-04-16T18:29:47.875Z",
-      "user_id": 802,
-      "target_user_id": 815
+      "id": 343,
+      "created_at": "2019-04-17T08:12:28.515Z",
+      "updated_at": "2019-04-17T08:12:28.515Z",
+      "user_id": 4,
+      "tool_id": 506,
+      "name": "Licensed Fresh Computer",
+      "distance": 163,
+      "tool_img_url": "http://lorempixel.com/400/400/technics",
+      "'condition'": "Ancient",
+      "condition_id": 4,
+      "condition_img_url": "http://lorempixel.com/400/400/abstract",
+      "category": "Lawn and Garden",
+      "category_id": 1,
+      "category_img_url": "http://lorempixel.com/400/400/abstract",
+      "loaner_id": 12,
+      "firstname": "Abdul",
+      "lastname": "Waelchi",
+      "loaner_img_url": "https://s3.amazonaws.com/uifaces/faces/twitter/m_kalibry/128.jpg"
     }
     ```
 
@@ -91,7 +110,7 @@ Creates a favorite
     {
       "errors": [
          {
-             "msg": "Invalid credentials."
+             "msg": "Unauthorized."
          }
       ]
     }
@@ -104,7 +123,7 @@ Creates a favorite
       "errors": [
         {
           "location": "body",
-          "param": "target_user_id",
+          "param": "tool_id",
           "value": "bad id",
           "msg": "Invalid value"
         }

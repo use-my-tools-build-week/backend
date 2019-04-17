@@ -1,6 +1,6 @@
 const db = require('../../config/db_config');
 
-const find = (limit = 100, page = 0) =>
+const find = () =>
   db('users')
     .select([
       'id',
@@ -8,10 +8,9 @@ const find = (limit = 100, page = 0) =>
       'updated_at',
       'firstname',
       'lastname',
-      'username'
-    ])
-    .limit(limit)
-    .offset(limit * page);
+      'username',
+      'img_url'
+    ]);
 
 const findById = id =>
   db('users')

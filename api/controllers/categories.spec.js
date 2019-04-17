@@ -84,11 +84,89 @@ describe('categoriesController', () => {
     });
   });
 
+  describe('GET /api/categories/:id', () => {
+    it('should respond with 200 and category when category found', async () => {
+      const {
+        user: { token },
+        validCategory
+      } = await setup();
+
+      const { body: createdCategory } = await request(server)
+        .post('/api/categories')
+        .set('Authorization', token)
+        .send(validCategory);
+
+      const { body, status } = await request(server)
+        .get(`/api/categories/${createdCategory.id}`)
+        .set('Authorization', token);
+
+      expect(status).toBe(200);
+      expect(createdCategory).toEqual(body);
+    });
+
+    it('should respond with 422 when no category found', async () => {
+      const {
+        user: { token }
+      } = await setup();
+
+      const { status } = await request(server)
+        .get('/api/categories/anIDthatdoesntExist')
+        .set('Authorization', token);
+
+      expect(status).toBe(422);
+    });
+
+    it('should limit and paginate results, sorting by distance', async () => {
+      const {
+        user: { token, ...user },
+        validCategory
+      } = await setup();
+
+      const { body: createdCategory } = await request(server)
+        .post('/api/categories')
+        .set('Authorization', token)
+        .send(validCategory);
+
+      const validTool = {
+        name: 'test_name',
+        user_id: user.id,
+        category_id: createdCategory.id
+      };
+
+      const createdTools = [];
+      for (let i = 0; i < 4; i++) {
+        const res = await request(server)
+          .post('/api/tools')
+          .set('Authorization', token)
+          .send({...validTool, name: `tool${i}`});
+
+        createdTools.push(res.body);
+      }
+      createdTools.sort((a, b) => a.distance - b.distance);
+
+
+      const { body: category } = await request(server)
+        .get(`/api/categories/${createdCategory.id}?limit=2&page=2`)
+        .set('Authorization', token);
+
+      expect(category.tools.results).toHaveLength(2);
+
+      expect(category.tools.results).toEqual([
+        createdTools[2],
+        createdTools[3]
+      ]);
+    });
+  });
+
   describe('GET /api/categories', () => {
     it('should respond with status 200 and empty array if no results', async () => {
-      const { status, body: categories } = await request(server).get(
-        '/api/categories'
-      );
+      const {
+        user: { token }
+      } = await setup();
+
+      const { status, body: categories } = await request(server)
+        .get('/api/categories')
+        .set('Authorization', token);
 
       expect(status).toBe(200);
       expect(categories).toEqual([]);
@@ -105,14 +183,16 @@ describe('categoriesController', () => {
         .set('Authorization', token)
         .send(validCategory);
 
-      const { body: targetCategory } = await request(server)
+      const {
+        body: { tools: omit, ...targetCategory }
+      } = await request(server)
         .post('/api/categories')
         .set('Authorization', token)
         .send({ ...validCategory, name: 'other_name' });
 
-      const { body: categories } = await request(server).get(
-        `/api/categories?search=other_name`
-      );
+      const { body: categories } = await request(server)
+        .get(`/api/categories?search=other_name`)
+        .set('Authorization', token);
 
       expect(categories).toEqual([targetCategory]);
     });

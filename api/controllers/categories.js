@@ -1,5 +1,5 @@
 const express = require('express');
-const { body, validationResult } = require('express-validator/check');
+const { body, param, validationResult } = require('express-validator/check');
 
 const Category = require('../models/Category');
 const { authenticate } = require('../middleware/authenticate');
@@ -30,10 +30,13 @@ router.post(
     } = req;
 
     try {
-      const saved = await Category.insert({
-        ...category,
-        user_id: currentUserId
-      });
+      const saved = await Category.insertWithTools(
+        {
+          ...category,
+          user_id: currentUserId
+        },
+        currentUserId
+      );
 
       return res.status(201).json(saved);
     } catch (error) {
@@ -42,7 +45,7 @@ router.post(
   }
 );
 
-router.get('/', async (req, res) => {
+router.get('/', authenticate, async (req, res) => {
   const {
     query: { search }
   } = req;
@@ -56,5 +59,43 @@ router.get('/', async (req, res) => {
     return res.status(500).json({ errors: [{ msg: 'Server Error' }] });
   }
 });
+
+router.get(
+  '/:id',
+  authenticate,
+  [param('id').isNumeric()],
+  async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    const {
+      decoded: { subject: currentUserId },
+      params: { id },
+      query: { page, search, limit }
+    } = req;
+
+    try {
+      const category = await Category.findByIdWithTools(
+        id,
+        currentUserId,
+        page,
+        limit
+      );
+      if (category) {
+        return res.status(200).json(category);
+      } else {
+        return res
+          .status(404)
+          .json({ errors: [{ msg: 'Category not found' }] });
+      }
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ errors: [{ msg: error.message }] });
+    }
+  }
+);
 
 module.exports = router;

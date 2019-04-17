@@ -1,13 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const { body, param, validationResult } = require('express-validator/check');
+const {param, validationResult } = require('express-validator/check');
 
 const User = require('../models/User');
 const { authenticate } = require('../middleware/authenticate');
 
 router.get('/', async (req, res) => {
   try {
-    const users = await User.find();
+    const {
+      query: { page, limit }
+    } = req;
+    const users = await User.find().paginate(limit, page);
 
     return res.status(200).json(users);
   } catch (error) {
@@ -62,7 +65,7 @@ router.put(
     }
 
     try {
-      const { password: omit, ...updatedUser } = await User.update(
+      const { password, ...updatedUser } = await User.update(
         id,
         req.body
       );

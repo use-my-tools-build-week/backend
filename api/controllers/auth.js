@@ -70,7 +70,7 @@ router.post(
         const token = generateToken(user);
         const {password: omit, ...userWithoutPassword} = user;
 
-        return res.status(200).json({ ...user, token });
+        return res.status(200).json({ ...userWithoutPassword, token });
       } else {
         return res
           .status(401)
