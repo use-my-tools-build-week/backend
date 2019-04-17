@@ -37,6 +37,7 @@ router.post(
 
       return res.status(201).json(saved);
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ errors: [{ msg: 'Server Error' }] });
     }
   }

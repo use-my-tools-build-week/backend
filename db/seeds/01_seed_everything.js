@@ -93,6 +93,7 @@ exports.seed = async (knex, Promise) => {
   }
   for(let i = 0; i < 1000; i++) {
     randomTools.push({
+      distance: faker.random.number({ min: 1, max: 1000 }),
       name: generateName(),
       category_id: randomItem(dbCategories).id,
       condition_id: randomItem(dbConditions).id,
