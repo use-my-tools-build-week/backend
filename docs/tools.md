@@ -13,11 +13,19 @@ Responds with an array of tools
 
   `GET`
 
+* **Headers**
+
+  **Required:**
+  ```
+  Authorization=[string, valid token]
+
 * **URL Params**
 
   **Optional:**
   ```
   search=[string of search terms]
+  limit=[integer]
+  page=[integer]
   ```
 
   **Example**
@@ -30,18 +38,36 @@ Responds with an array of tools
   * **Code:** 200 <br />
     **Content:**
     ```json
-    [
-      {
-          "id": 1075,
-          "created_at": "2019-04-16T18:29:47.659Z",
-          "updated_at": "2019-04-16T18:29:47.659Z",
-          "name": "Awesome Soft Gloves",
+    {
+      "total": 12639,
+      "per_page": "1",
+      "offset": 0,
+      "to": 1,
+      "last_page": 12639,
+      "current_page": 1,
+      "from": 0,
+      "results": [
+        {
+          "id": 797,
+          "distance": 1,
+          "description": "Omnis esse nam. Est numquam et.",
+          "created_at": "2019-04-17T08:12:28.269Z",
+          "updated_at": "2019-04-17T08:12:28.269Z",
+          "name": "Practical Soft Car",
           "img_url": "http://lorempixel.com/400/400/technics",
-          "user_id": 919,
-          "category_id": 41,
-          "condition_id": 14
-      },
-    ]
+          "user_id": 83,
+          "category_id": 4,
+          "condition_id": 3,
+          "firstname": "Lawrence",
+          "lastname": "Raynor",
+          "loaner_img_url": "https://s3.amazonaws.com/uifaces/faces/twitter/kanickairaj/128.jpg",
+          "category_name": "Air Tools",
+          "condition_name": "Well Used",
+          "is_favorited": 0,
+          "is_requested": 0
+        }
+      ]
+    }
     ```
 
 **Create Tool**
@@ -90,14 +116,34 @@ Creates a tool
     **Content:**
     ```json
     {
-      "id": 2075,
-      "created_at": "2019-04-16T19:46:07.532Z",
-      "updated_at": "2019-04-16T19:46:07.532Z",
-      "name": "test tool",
-      "img_url": null,
-      "user_id": 802,
-      "category_id": null,
-      "condition_id": null
+      "total": 12639,
+      "per_page": "1",
+      "offset": 0,
+      "to": 1,
+      "last_page": 12639,
+      "current_page": 1,
+      "from": 0,
+      "results": [
+        {
+          "id": 797,
+          "distance": 1,
+          "description": "Omnis esse nam. Est numquam et.",
+          "created_at": "2019-04-17T08:12:28.269Z",
+          "updated_at": "2019-04-17T08:12:28.269Z",
+          "name": "Practical Soft Car",
+          "img_url": "http://lorempixel.com/400/400/technics",
+          "user_id": 83,
+          "category_id": 4,
+          "condition_id": 3,
+          "firstname": "Lawrence",
+          "lastname": "Raynor",
+          "loaner_img_url": "https://s3.amazonaws.com/uifaces/faces/twitter/kanickairaj/128.jpg",
+          "category_name": "Air Tools",
+          "condition_name": "Well Used",
+          "is_favorited": 0,
+          "is_requested": 0
+        }
+      ]
     }
     ```
 
@@ -181,14 +227,23 @@ Updates a tool
     **Content:**
     ```json
     {
-      "id": 2076,
-      "created_at": "2019-04-16T20:02:21.071Z",
-      "updated_at": "2019-04-16T20:02:21.071Z",
-      "name": "test tool2",
+      "id": 1001,
+      "distance": 560,
+      "description": null,
+      "created_at": "2019-04-17T17:13:29.100Z",
+      "updated_at": "2019-04-17T17:13:29.100Z",
+      "name": "test tool",
       "img_url": null,
-      "user_id": 802,
+      "user_id": 4,
       "category_id": null,
-      "condition_id": null
+      "condition_id": null,
+      "firstname": "Jeremie",
+      "lastname": "testname",
+      "loaner_img_url": "https://s3.amazonaws.com/uifaces/faces/twitter/antongenkin/128.jpg",
+      "category_name": null,
+      "condition_name": null,
+      "is_favorited": 0,
+      "is_requested": 0
     }
     ```
 * **Error Response:**
@@ -236,20 +291,36 @@ Responds with one tool including reviews and loan requests
 
   `GET`
 
+* **Headers**
+
+  **Required:**
+  ```
+  Authorization=[string, valid token]
+  ```
+
 * **Success Response:**
 
   * **Code:** 200 <br />
     **Content:**
     ```json
     {
-      "id": 2076,
-      "created_at": "2019-04-16T20:02:21.071Z",
-      "updated_at": "2019-04-16T20:02:21.071Z",
-      "name": "test tool2",
-      "img_url": null,
-      "user_id": 802,
-      "category_id": null,
-      "condition_id": null
+      "id": 1,
+      "distance": 225,
+      "description": "Aut dolor laborum perspiciatis earum laboriosam quis. Recusandae eos quidem est aut officiis aut. Deserunt tenetur explicabo sunt.",
+      "created_at": "2019-04-17T08:12:28.269Z",
+      "updated_at": "2019-04-17T08:12:28.269Z",
+      "name": "Generic Fresh Hat",
+      "img_url": "http://lorempixel.com/400/400/technics",
+      "user_id": 142,
+      "category_id": 5,
+      "condition_id": 3,
+      "firstname": "Caden",
+      "lastname": "Conroy",
+      "loaner_img_url": "https://s3.amazonaws.com/uifaces/faces/twitter/greenbes/128.jpg",
+      "category_name": "Automotive",
+      "condition_name": "Well Used",
+      "is_favorited": 0,
+      "is_requested": 0
     }
     ```
 * **Error Response:**
@@ -308,14 +379,23 @@ Responds with one tool including reviews and loan requests
     **Content:**
     ```json
     {
-      "id": 2076,
-      "created_at": "2019-04-16T20:02:21.071Z",
-      "updated_at": "2019-04-16T20:02:21.071Z",
-      "name": "deleted tool",
-      "img_url": null,
-      "user_id": 802,
-      "category_id": null,
-      "condition_id": null
+      "id": 1,
+      "distance": 225,
+      "description": "Aut dolor laborum perspiciatis earum laboriosam quis. Recusandae eos quidem est aut officiis aut. Deserunt tenetur explicabo sunt.",
+      "created_at": "2019-04-17T08:12:28.269Z",
+      "updated_at": "2019-04-17T08:12:28.269Z",
+      "name": "Generic Fresh Hat",
+      "img_url": "http://lorempixel.com/400/400/technics",
+      "user_id": 142,
+      "category_id": 5,
+      "condition_id": 3,
+      "firstname": "Caden",
+      "lastname": "Conroy",
+      "loaner_img_url": "https://s3.amazonaws.com/uifaces/faces/twitter/greenbes/128.jpg",
+      "category_name": "Automotive",
+      "condition_name": "Well Used",
+      "is_favorited": 0,
+      "is_requested": 0
     }
     ```
 * **Error Response:**

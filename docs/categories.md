@@ -50,17 +50,21 @@ Responds with an array of categories
     ]
     ```
 
-**Create Category**
+**Show Category**
 ----
-Creates a category
+Shows a category
 
 * **URL**
 
-  /categories
+  /categories/:category_id
+
+  **Example**
+
+  /categories/1
 
 * **Method:**
 
-  `POST`
+  `GET`
 
 * **Headers**
 
@@ -69,23 +73,17 @@ Creates a category
   Authorization=[string, valid token]
   ```
 
-* **Data Params**
-
-  **Required:**
-  ```
-  name=[string]
-  ```
+* **URL Params**
 
   **Optional:**
   ```
-  img_url=[string, url]
+  page=[integer, tools page number]
+  limit=[integer, number of tools]
   ```
 
   **Example Body**
   ```json
-  {
-    "name": "test category"
-  }
+  /api/categories/1?limit=1
   ```
 
 * **Success Response:**
@@ -94,12 +92,43 @@ Creates a category
     **Content:**
     ```json
     {
-      "id": 38,
-      "created_at": "2019-04-16T18:29:47.646Z",
-      "updated_at": "2019-04-16T18:29:47.646Z",
-      "name": "lawncare",
+      "id": 1,
+      "created_at": "2019-04-17T08:12:28.234Z",
+      "updated_at": "2019-04-17T08:12:28.234Z",
+      "name": "Lawn and Garden",
       "img_url": "http://lorempixel.com/400/400/abstract",
-      "user_id": 826
+      "blurb": "Make that yard beautiful!",
+      "user_id": 69,
+      "tools": {
+        "total": 12639,
+        "per_page": "1",
+        "offset": 0,
+        "to": 1,
+        "last_page": 12639,
+        "current_page": 1,
+        "from": 0,
+        "results": [
+          {
+            "id": 797,
+            "distance": 1,
+            "description": "Omnis esse nam. Est numquam et. Dolor cupiditate facere quaerat placeat distinctio ducimus.",
+            "created_at": "2019-04-17T08:12:28.269Z",
+            "updated_at": "2019-04-17T08:12:28.269Z",
+            "name": "Practical Soft Car",
+            "img_url": "http://lorempixel.com/400/400/technics",
+            "user_id": 83,
+            "category_id": 4,
+            "condition_id": 3,
+            "firstname": "Lawrence",
+            "lastname": "Raynor",
+            "loaner_img_url": "https://s3.amazonaws.com/uifaces/faces/twitter/kanickairaj/128.jpg",
+            "category_name": "Air Tools",
+            "condition_name": "Well Used",
+            "is_favorited": 0,
+            "is_requested": 0
+          }
+        ]
+      }
     }
     ```
 
@@ -111,7 +140,7 @@ Creates a category
     {
       "errors": [
          {
-             "msg": "Invalid credentials."
+             "msg": "Unauthorized"
          }
       ]
     }
@@ -124,9 +153,9 @@ Creates a category
       "errors": [
         {
           "location": "body",
-          "param": "name",
+          "param": "id",
           "value": "test category",
-          "msg": "name already in use"
+          "msg": "Invalid input"
         }
       ]
     }
