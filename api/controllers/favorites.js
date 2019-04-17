@@ -10,7 +10,7 @@ router.post(
   '/',
   authenticate,
   [
-    body('target_user_id')
+    body('tool_id')
       .not()
       .isEmpty()
       .toInt()
