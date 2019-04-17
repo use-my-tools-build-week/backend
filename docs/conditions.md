@@ -36,7 +36,7 @@ Responds with an array of conditions
         "created_at": "2019-04-16t18:29:47.646z",
         "updated_at": "2019-04-16t18:29:47.646z",
         "name": "treework",
-        "image_url": "http://lorempixel.com/400/400/abstract",
+        "img_url": "http://lorempixel.com/400/400/abstract",
         "user_id": 950
       },
       {
@@ -44,7 +44,7 @@ Responds with an array of conditions
         "created_at": "2019-04-16t18:29:47.646z",
         "updated_at": "2019-04-16t18:29:47.646z",
         "name": "lawncare",
-        "image_url": "http://lorempixel.com/400/400/abstract",
+        "img_url": "http://lorempixel.com/400/400/abstract",
         "user_id": 826
       },
     ]
@@ -78,7 +78,7 @@ Creates a condition
 
   **Optional:**
   ```
-  image_url=[string, url]
+  img_url=[string, url]
   ```
 
   **Example Body**
@@ -98,7 +98,7 @@ Creates a condition
       "created_at": "2019-04-16T18:29:47.646Z",
       "updated_at": "2019-04-16T18:29:47.646Z",
       "name": "new",
-      "image_url": "http://lorempixel.com/400/400/abstract",
+      "img_url": "http://lorempixel.com/400/400/abstract",
       "user_id": 826
     }
     ```

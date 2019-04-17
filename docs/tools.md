@@ -36,7 +36,7 @@ Responds with an array of tools
           "created_at": "2019-04-16T18:29:47.659Z",
           "updated_at": "2019-04-16T18:29:47.659Z",
           "name": "Awesome Soft Gloves",
-          "image_url": "http://lorempixel.com/400/400/technics",
+          "img_url": "http://lorempixel.com/400/400/technics",
           "user_id": 919,
           "category_id": 41,
           "condition_id": 14
@@ -72,7 +72,7 @@ Creates a tool
 
   **Optional:**
   ```
-  image_url=[string, url]
+  img_url=[string, url]
   category_id=[integer]
   condition_id=[integer]
   ```
@@ -94,7 +94,7 @@ Creates a tool
       "created_at": "2019-04-16T19:46:07.532Z",
       "updated_at": "2019-04-16T19:46:07.532Z",
       "name": "test tool",
-      "image_url": null,
+      "img_url": null,
       "user_id": 802,
       "category_id": null,
       "condition_id": null
@@ -185,7 +185,7 @@ Updates a tool
       "created_at": "2019-04-16T20:02:21.071Z",
       "updated_at": "2019-04-16T20:02:21.071Z",
       "name": "test tool2",
-      "image_url": null,
+      "img_url": null,
       "user_id": 802,
       "category_id": null,
       "condition_id": null
@@ -246,7 +246,7 @@ Responds with one tool including reviews and loan requests
       "created_at": "2019-04-16T20:02:21.071Z",
       "updated_at": "2019-04-16T20:02:21.071Z",
       "name": "test tool2",
-      "image_url": null,
+      "img_url": null,
       "user_id": 802,
       "category_id": null,
       "condition_id": null
@@ -312,7 +312,7 @@ Responds with one tool including reviews and loan requests
       "created_at": "2019-04-16T20:02:21.071Z",
       "updated_at": "2019-04-16T20:02:21.071Z",
       "name": "deleted tool",
-      "image_url": null,
+      "img_url": null,
       "user_id": 802,
       "category_id": null,
       "condition_id": null

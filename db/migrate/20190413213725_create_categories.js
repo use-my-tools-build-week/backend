@@ -3,7 +3,7 @@ exports.up = function(knex) {
     tbl.increments();
     tbl.timestamps(true, true);
     tbl.string('name', 128).notNullable().unique();
-    tbl.text('image_url');
+    tbl.text('img_url');
     tbl
       .integer('user_id')
       .unsigned()

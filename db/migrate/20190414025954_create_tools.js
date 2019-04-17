@@ -7,7 +7,7 @@ exports.up = function(knex) {
         .string('name', 128)
         .notNullable()
         .unique();
-      tbl.text('image_url');
+      tbl.text('img_url');
       tbl
         .integer('user_id')
         .unsigned()
@@ -25,7 +25,7 @@ exports.up = function(knex) {
         .string('name', 128)
         .notNullable()
         .unique();
-      tbl.text('image_url');
+      tbl.text('img_url');
       tbl
         .integer('user_id')
         .unsigned()
