@@ -19,7 +19,7 @@ exports.up = function(knex) {
     })
     .createTable('tools', tbl => {
       tbl.increments();
-      tbl.integer('distance')
+      tbl.integer('distance');
       tbl.timestamps(true, true);
       tbl
         .string('name', 128)

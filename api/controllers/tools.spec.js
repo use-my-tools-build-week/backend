@@ -105,7 +105,7 @@ describe('toolsController', () => {
       expect(tools.results).toEqual([targetTool]);
     });
 
-    it('should limit and paginate results', async () => {
+    it('should limit and paginate results, sorting by distance', async () => {
       const {
         user: { token },
         validTool
@@ -120,6 +120,8 @@ describe('toolsController', () => {
 
         createdTools.push(res.body);
       }
+
+      createdTools.sort((a,b) => a.distance - b.distance);
 
       expect(createdTools).toHaveLength(4);
 
