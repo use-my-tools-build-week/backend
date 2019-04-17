@@ -15,7 +15,8 @@ router.post(
       .not()
       .isEmpty()
       .trim()
-      .custom(uniqueCheck(Tool, 'name'))
+      .custom(uniqueCheck(Tool, 'name')),
+    body('description').trim()
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -79,7 +80,7 @@ router.get('/:id', [param('id').isNumeric()], async (req, res) => {
 router.put(
   '/:id',
   authenticate,
-  [param('id').isNumeric()],
+  [param('id').isNumeric(), body('description').trim()],
   async (req, res) => {
     const errors = validationResult(req);
 

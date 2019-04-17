@@ -55,7 +55,7 @@ exports.seed = async (knex, Promise) => {
   const dbUsers = await knex('users');
 
   await knex('conditions').insert(
-    ['new', 'used', 'ancient'].map(name => ({
+    ['Excellent', 'Okay', 'Well Used', 'Ancient'].map(name => ({
       name,
       user_id: randomItem(dbUsers).id,
       img_url: faker.image.abstract(400, 400)
@@ -95,6 +95,7 @@ exports.seed = async (knex, Promise) => {
     randomTools.push({
       distance: faker.random.number({ min: 1, max: 1000 }),
       name: generateName(),
+      description: faker.lorem.paragraph(),
       category_id: randomItem(dbCategories).id,
       condition_id: randomItem(dbConditions).id,
       img_url: faker.image.technics(400,400),
