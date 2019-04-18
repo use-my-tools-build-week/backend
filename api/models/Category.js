@@ -35,6 +35,7 @@ const findByIdWithTools = (id, userId, page=1, limit=30) =>
         .leftJoin('conditions', 'conditions.id', 'tools.condition_id')
         .leftJoin('categories', 'categories.id', 'tools.category_id')
         .orderBy('tools.distance', 'asc')
+        .where({ category_id: category.id })
         .paginate(limit, page)
         .then(tools => ({ ...category, tools: tools }))
     );
