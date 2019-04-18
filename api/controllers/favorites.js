@@ -44,7 +44,7 @@ router.get('/', authenticate, async (req, res) => {
   const {
     decoded: { subject: currentUserId }
   } = req;
-  const favorites = await Favorite.findByUserId(currentUserId);
+  const favorites = await Favorite.findByUserId(currentUserId).paginate();
   return res.status(200).json(favorites);
 });
 

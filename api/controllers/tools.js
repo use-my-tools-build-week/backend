@@ -44,6 +44,18 @@ router.post(
   }
 );
 
+router.get('/my_tools', authenticate, async (req, res) => {
+  const {
+    query: { search, limit, page },
+    decoded: { subject: currentUserId }
+  } = req;
+
+  const tools = search
+    ? await Tool.myToolsWithName(search, currentUserId).paginate(limit, page)
+    : await Tool.myTools(currentUserId).paginate(limit, page);
+  return res.status(200).json(tools);
+});
+
 router.get('/', authenticate, async (req, res) => {
   const {
     query: { search, limit, page },

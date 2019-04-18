@@ -2,13 +2,12 @@ const db = require('../../config/db_config');
 
 const find = () =>
   db('favorites')
-    .distinct('favorites.*')
     .select([
       'favorites.*',
       'tools.name',
       'tools.distance',
       'tools.img_url as tool_img_url',
-      "conditions.name as 'condition'",
+      'conditions.name as condition',
       'conditions.id as condition_id',
       'conditions.img_url as condition_img_url',
       'categories.name as category',

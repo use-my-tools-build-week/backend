@@ -56,6 +56,15 @@ router.post(
   }
 );
 
+router.get('/my_loan_requests', authenticate, async (req, res) => {
+  const {
+    decoded: { subject: currentUserId }
+  } = req;
+  const asLoaner = await LoanRequest.find().where({ loaner_id: userId });
+  const asBorrower = await LoanRequest.find().where({ user_id: userId });
+  return res.status(200).json({ toMe: asLoaner, fromMe: asBorrower });
+});
+
 router.put(
   '/:id',
   authenticate,
