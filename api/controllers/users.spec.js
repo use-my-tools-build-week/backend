@@ -76,8 +76,7 @@ describe('usersController', () => {
       expect(status).toBe(422);
     });
   });
-
-  describe('PUT /api/users/:id', () => {
+  describe('PUT /api/users/update_profile', () => {
     beforeEach(() =>
       request(server)
         .post('/api/register')
@@ -91,7 +90,7 @@ describe('usersController', () => {
 
     it('should respond with 401 if not logged in', async () => {
       const { status } = await request(server)
-        .put('/api/users/anIDthatdoesntExist')
+        .put('/api/users/update_profile')
         .send({ ...validUser, username: 'Something Else' });
 
       expect(status).toBe(401);
@@ -102,40 +101,13 @@ describe('usersController', () => {
         body: { token }
       } = await login();
 
-      const {
-        body: {
-          results: [knownUser]
-        }
-      } = await request(server).get('/api/users');
-
       const { body: updatedUser, status } = await request(server)
-        .put(`/api/users/${knownUser.id}`)
+        .put(`/api/users/update_profile`)
         .set('Authorization', token)
         .send({ ...validUser, username: 'Something Else' });
 
       expect(status).toBe(200);
       expect(updatedUser.username).toBe('Something Else');
-    });
-
-    it('should respond with 422 when id does not match current user id', async () => {
-      const {
-        body: { token }
-      } = await login();
-
-      expect(token).toBeDefined();
-
-      const {
-        body: { id: notCurrentUserId }
-      } = await request(server)
-        .post('/api/register')
-        .send(validUser);
-
-      const { status } = await request(server)
-        .put(`/api/users/${notCurrentUserId}`)
-        .set('Authorization', token)
-        .send({ username: 'Something Else' });
-
-      expect(status).toBe(422);
     });
   });
 });

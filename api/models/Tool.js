@@ -4,6 +4,7 @@ const db = require('../../config/db_config');
 const find = () => db('tools').orderBy('distance', 'asc');
 const findWithFavorites = (userId) =>
   db('tools')
+    .distinct('tools.*')
     .select(
       'tools.*',
       'users.firstname',
