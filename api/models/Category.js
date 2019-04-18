@@ -13,6 +13,7 @@ const findByIdWithTools = (id, userId, page=1, limit=30) =>
     .first()
     .then(category =>
       db('tools')
+        .distinct('tools.*')
         .select(
           'tools.*',
           'users.firstname',

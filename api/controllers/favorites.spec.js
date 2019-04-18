@@ -95,7 +95,7 @@ describe('favoritesController', () => {
   });
 
   describe('DELETE /api/favorites/:id', () => {
-    it('should respond with 401 when user_id does not match current user id', async () => {
+    it('should respond with 404 when user_id does not match current user id', async () => {
       const {
         user: { token },
         validFavorite
@@ -120,11 +120,11 @@ describe('favoritesController', () => {
         .post('/api/register')
         .send(unauthorizedCreds);
 
-      const { status } = await request(server)
+      const response = await request(server)
         .delete(`/api/favorites/${createdFavorite.id}`)
         .set('Authorization', unauthorizedToken);
 
-      expect(status).toBe(401);
+      expect(response.status).toBe(404);
     });
 
     it('should respond with 200 and deleted favorite on success', async () => {
