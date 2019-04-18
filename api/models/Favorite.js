@@ -2,6 +2,7 @@ const db = require('../../config/db_config');
 
 const find = () =>
   db('favorites')
+    .distinct('favorites.*')
     .select([
       'favorites.*',
       'tools.name',

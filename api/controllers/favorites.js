@@ -78,7 +78,6 @@ router.delete(
           .json({ errors: [{ msg: 'User favorite does not exist' }] });
       }
     } catch (err) {
-      console.log(err);
       return res.status(500).json({ errors: [{ msg: error.message }] });
     }
   }
