@@ -2,7 +2,7 @@ const db = require('../../config/db_config');
 // const knex = require('knex');
 
 const find = () => db('tools').orderBy('distance', 'asc');
-const findWithFavorites = (userId) =>
+const findWithFavorites = userId =>
   db('tools')
     .distinct('tools.*')
     .select(
@@ -12,8 +12,12 @@ const findWithFavorites = (userId) =>
       'users.img_url as loaner_img_url',
       'categories.name as category_name',
       'conditions.name as condition_name',
-      db.raw(`CASE WHEN favorites.user_id = ${userId} THEN 1 ELSE 0 END is_favorited`),
-      db.raw(`CASE WHEN loan_requests.user_id = ${userId} THEN 1 ELSE 0 END is_requested`)
+      db.raw(
+        `CASE WHEN favorites.user_id = ${userId} THEN 1 ELSE 0 END is_favorited`
+      ),
+      db.raw(
+        `CASE WHEN loan_requests.user_id = ${userId} THEN 1 ELSE 0 END is_requested`
+      )
     )
     .from('tools')
     .leftJoin('users', 'users.id', 'tools.user_id')
@@ -32,8 +36,12 @@ const findByIdWithFavorites = (id, userId) =>
       'users.img_url as loaner_img_url',
       'categories.name as category_name',
       'conditions.name as condition_name',
-      db.raw(`CASE WHEN favorites.user_id = ${userId} THEN 1 ELSE 0 END is_favorited`),
-      db.raw(`CASE WHEN loan_requests.user_id = ${userId} THEN 1 ELSE 0 END is_requested`)
+      db.raw(
+        `CASE WHEN favorites.user_id = ${userId} THEN 1 ELSE 0 END is_favorited`
+      ),
+      db.raw(
+        `CASE WHEN loan_requests.user_id = ${userId} THEN 1 ELSE 0 END is_requested`
+      )
     )
     .from('tools')
     .leftJoin('users', 'users.id', 'tools.user_id')
@@ -54,9 +62,16 @@ const findByName = name =>
     .where('name', 'like', `%${name}%`)
     .orderBy('distance', 'asc');
 
-const findByNameWithFavorites = (name, userId) =>
+const myToolsWithName = (name, userId) =>
   findWithFavorites(userId)
-    .where('tools.name', 'like', `%${name}%`);
+    .where('tools.name', 'like', `%${name}%`)
+    .where({ 'tools.user_id': userId });
+
+const myTools = userId =>
+  findWithFavorites(userId).where({ 'tools.user_id': userId });
+
+const findByNameWithFavorites = (name, userId) =>
+  findWithFavorites(userId).where('tools.name', 'like', `%${name}%`);
 
 const insert = tool =>
   db('tools')
@@ -83,6 +98,8 @@ module.exports = {
   find,
   findById,
   findByName,
+  myTools,
+  myToolsWithName,
   findByNameWithFavorites,
   findByIdWithFavorites,
   findWithFavorites,
