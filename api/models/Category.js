@@ -1,4 +1,5 @@
 const db = require('../../config/db_config');
+const Tool = require('./Tool');
 
 const find = () => db('categories');
 
@@ -7,34 +8,12 @@ const findById = id =>
     .where({ id })
     .first();
 
-const findByIdWithTools = (id, userId, page=1, limit=30) =>
+const findByIdWithTools = (id, userId, page = 1, limit = 30) =>
   db('categories')
     .where({ id })
     .first()
     .then(category =>
-      db('tools')
-        .distinct('tools.*')
-        .select(
-          'tools.*',
-          'users.firstname',
-          'users.lastname',
-          'users.img_url as loaner_img_url',
-          'categories.name as category_name',
-          'conditions.name as condition_name',
-          db.raw(
-            `CASE WHEN favorites.user_id = ${userId} THEN 1 ELSE 0 END is_favorited`
-          ),
-          db.raw(
-            `CASE WHEN loan_requests.user_id = ${userId} THEN 1 ELSE 0 END is_requested`
-          )
-        )
-        .from('tools')
-        .leftJoin('users', 'users.id', 'tools.user_id')
-        .leftJoin('favorites', 'users.id', 'favorites.user_id')
-        .leftJoin('loan_requests', 'users.id', 'loan_requests.user_id')
-        .leftJoin('conditions', 'conditions.id', 'tools.condition_id')
-        .leftJoin('categories', 'categories.id', 'tools.category_id')
-        .orderBy('tools.distance', 'asc')
+      Tool.findWithFavorites(userId)
         .where({ category_id: category.id })
         .paginate(limit, page)
         .then(tools => ({ ...category, tools: tools }))

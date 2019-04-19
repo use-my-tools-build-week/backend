@@ -1,10 +1,9 @@
 const db = require('../../config/db_config');
-// const knex = require('knex');
 
 const find = () => db('tools').orderBy('distance', 'asc');
+
 const findWithFavorites = userId =>
   db('tools')
-    .distinct('tools.*')
     .select(
       'tools.*',
       'users.firstname',
@@ -12,45 +11,54 @@ const findWithFavorites = userId =>
       'users.img_url as loaner_img_url',
       'categories.name as category_name',
       'conditions.name as condition_name',
-      db.raw(
-        `CASE WHEN favorites.user_id = ${userId} THEN 1 ELSE 0 END is_favorited`
-      ),
-      db.raw(
-        `CASE WHEN loan_requests.user_id = ${userId} THEN 1 ELSE 0 END is_requested`
-      )
+      'f.is_favorited',
+      'l.is_loaner',
+      'l.is_borrower'
     )
-    .from('tools')
-    .leftJoin('users', 'users.id', 'tools.user_id')
-    .leftJoin('favorites', 'users.id', 'favorites.user_id')
-    .leftJoin('loan_requests', 'users.id', 'loan_requests.user_id')
-    .leftJoin('conditions', 'conditions.id', 'tools.condition_id')
-    .leftJoin('categories', 'categories.id', 'tools.category_id')
+    .leftJoin(
+      db('favorites')
+        .select(
+          'favorites.id as favorite_id',
+          'favorites.tool_id',
+          db.raw(
+            'case when favorites.id is null then 0 else 1 end is_favorited'
+          )
+        )
+        .from('favorites')
+        .where({ 'favorites.user_id': userId })
+        .as('f'),
+      'f.tool_id',
+      '=',
+      'tools.id'
+    )
+    .leftJoin(
+      db('loan_requests')
+        .select(
+          'loan_requests.id as loan_request_id',
+          'loan_requests.tool_id',
+          'loan_requests.user_id as borrower_id',
+          db.raw(
+            `case when loan_requests.loaner_id = ${userId} then 1 else 0 end is_loaner`,
+          ),
+          db.raw(
+            `case when loan_requests.user_id = ${userId} then 1 else 0 end is_borrower`
+          )
+        )
+        .from('loan_requests')
+        .where({ 'loan_requests.user_id': userId })
+        .orWhere({ 'loan_requests.loaner_id': userId })
+        .as('l'),
+      'l.tool_id',
+      '=',
+      'tools.id'
+    )
+    .leftJoin('users', 'users.id', '=', 'tools.user_id')
+    .leftJoin('conditions', 'conditions.id', '=', 'tools.condition_id')
+    .leftJoin('categories', 'categories.id', '=', 'tools.category_id')
     .orderBy('tools.distance', 'asc');
 
 const findByIdWithFavorites = (id, userId) =>
-  db('tools')
-    .select(
-      'tools.*',
-      'users.firstname',
-      'users.lastname',
-      'users.img_url as loaner_img_url',
-      'categories.name as category_name',
-      'conditions.name as condition_name',
-      db.raw(
-        `CASE WHEN favorites.user_id = ${userId} THEN 1 ELSE 0 END is_favorited`
-      ),
-      db.raw(
-        `CASE WHEN loan_requests.user_id = ${userId} THEN 1 ELSE 0 END is_requested`
-      )
-    )
-    .from('tools')
-    .leftJoin('users', 'users.id', 'tools.user_id')
-    .leftJoin('favorites', 'users.id', 'favorites.user_id')
-    .leftJoin('loan_requests', 'users.id', 'loan_requests.user_id')
-    .leftJoin('conditions', 'conditions.id', 'tools.condition_id')
-    .leftJoin('categories', 'categories.id', 'tools.category_id')
-    .where({ 'tools.id': id })
-    .first();
+  findWithFavorites(userId).where({ 'tools.id': id}).first();
 
 const findById = id =>
   db('tools')
