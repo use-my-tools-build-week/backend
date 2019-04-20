@@ -30,7 +30,15 @@ const findById = id =>
 
 const findByUserId = userId => find().where({ 'favorites.user_id': userId });
 
-const insert = tool => db('favorites').insert(tool, 'id');
+const insert = favorite =>
+  db('favorites')
+    .insert(favorite, 'id')
+    .then(ids => findById(ids[0]));
+
+const insertIfNotExists = favorite =>
+  findByUserId(favorite.user_id)
+    .first()
+    .then(maybeFave => (maybeFave ? maybeFave : insert(favorite)));
 
 const update = (id, changes) =>
   db('favorites')
@@ -49,5 +57,6 @@ module.exports = {
   findByUserId,
   insert,
   update,
-  remove
+  remove,
+  insertIfNotExists
 };

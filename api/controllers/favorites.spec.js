@@ -56,13 +56,13 @@ describe('favoritesController', () => {
         user: { token }
       } = await setup();
 
-      const { body: userFavorites, status } = await request(server)
+      const { body: userFavorite, status } = await request(server)
         .post('/api/favorites')
         .set('Authorization', token)
         .send(validFavorite);
 
       expect(status).toBe(201);
-      expect(Array.isArray(userFavorites)).toBe(true);
+      expect(userFavorite).toEqual(expect.objectContaining(validFavorite));
     });
 
     it('should respond with 422 on invalid input', async () => {
@@ -77,6 +77,32 @@ describe('favoritesController', () => {
 
       expect(response.status).toBe(422);
     });
+
+    it('should add only the first favorite on repeated posts', async () => {
+      const {
+        validFavorite,
+        user: { token }
+      } = await setup();
+
+      await request(server)
+        .post('/api/favorites')
+        .set('Authorization', token)
+        .send(validFavorite);
+
+      const { body: userFavorite, status } = await request(server)
+        .post('/api/favorites')
+        .set('Authorization', token)
+        .send(validFavorite);
+
+
+      const { body: favorites } = await request(server)
+        .get('/api/favorites')
+        .set('Authorization', token);
+
+      expect(status).toBe(201);
+      expect(favorites.results).toHaveLength(1);
+      expect(favorites.results).toEqual(expect.arrayContaining([userFavorite]));
+    });
   });
 
   describe('GET /api/favorites', () => {
@@ -90,7 +116,7 @@ describe('favoritesController', () => {
         .set('Authorization', token);
 
       expect(status).toBe(200);
-      expect(favorites).toEqual([]);
+      expect(favorites.results).toEqual([]);
     });
   });
 
@@ -102,7 +128,7 @@ describe('favoritesController', () => {
       } = await setup();
 
       const {
-        body: [createdFavorite]
+        body: createdFavorite
       } = await request(server)
         .post('/api/favorites')
         .set('Authorization', token)
@@ -134,7 +160,7 @@ describe('favoritesController', () => {
       } = await setup();
 
       const {
-        body: [createdFavorite]
+        body: createdFavorite
       } = await request(server)
         .post('/api/favorites')
         .set('Authorization', token)

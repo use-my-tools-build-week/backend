@@ -28,12 +28,12 @@ router.post(
     } = req;
 
     try {
-      const favorites = await Favorite.insert({
+      const createdFavorite = await Favorite.insertIfNotExists({
         ...favorite,
         user_id: currentUserId
-      }).then(() => Favorite.findByUserId(currentUserId));
+      });
 
-      return res.status(201).json(favorites);
+      return res.status(201).json(createdFavorite);
     } catch (error) {
       return res.status(500).json({ errors: [{ msg: 'Server Error' }] });
     }
