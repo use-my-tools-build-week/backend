@@ -24,8 +24,8 @@ const find = () =>
     .leftJoin('users', 'users.id', 'tools.user_id');
 
 const findById = id =>
-  db('favorites')
-    .where({ id })
+  find()
+    .where({ 'favorites.id': id })
     .first();
 
 const findByUserId = userId => find().where({ 'favorites.user_id': userId });
@@ -37,6 +37,7 @@ const insert = favorite =>
 
 const insertIfNotExists = favorite =>
   findByUserId(favorite.user_id)
+    .where({tool_id: favorite.tool_id})
     .first()
     .then(maybeFave => (maybeFave ? maybeFave : insert(favorite)));
 

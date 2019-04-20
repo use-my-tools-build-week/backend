@@ -68,7 +68,9 @@ router.delete(
     } = req;
 
     try {
-      const favorite = await Favorite.findById(id).where({user_id: currentUserId});
+      const favorite = await Favorite.findById(id).where({
+        'favorites.user_id': currentUserId
+      });
       if (favorite) {
         await Favorite.remove(id);
         return res.status(200).json(favorite);
@@ -77,7 +79,8 @@ router.delete(
           .status(404)
           .json({ errors: [{ msg: 'User favorite does not exist' }] });
       }
-    } catch (err) {
+    } catch (error) {
+      console.log(error);
       return res.status(500).json({ errors: [{ msg: error.message }] });
     }
   }

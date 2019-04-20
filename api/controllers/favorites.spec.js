@@ -32,12 +32,20 @@ describe('favoritesController', () => {
         user_id: loaner.id
       });
 
+    const { body: tool2 } = await request(server)
+      .post('/api/tools')
+      .set('Authorization', loaner.token)
+      .send({
+        name: 'test_tool2',
+        user_id: loaner.id
+      });
+
     const validFavorite = {
       user_id: user.id,
       tool_id: tool.id
     };
 
-    return { loaner, user, tool, validFavorite };
+    return { loaner, user, tool, tool2, validFavorite };
   };
 
   describe('POST /api/favorites', () => {
@@ -94,7 +102,6 @@ describe('favoritesController', () => {
         .set('Authorization', token)
         .send(validFavorite);
 
-
       const { body: favorites } = await request(server)
         .get('/api/favorites')
         .set('Authorization', token);
@@ -102,6 +109,34 @@ describe('favoritesController', () => {
       expect(status).toBe(201);
       expect(favorites.results).toHaveLength(1);
       expect(favorites.results).toEqual(expect.arrayContaining([userFavorite]));
+    });
+
+    it('should allow favorites on different tools', async () => {
+      const {
+        validFavorite,
+        user: { token },
+        tool2
+      } = await setup();
+
+      const { body: favoriteTool1 } = await request(server)
+        .post('/api/favorites')
+        .set('Authorization', token)
+        .send(validFavorite);
+
+      const { body: favoriteTool2, status } = await request(server)
+        .post('/api/favorites')
+        .set('Authorization', token)
+        .send({ ...validFavorite, tool_id: tool2.id });
+
+      const { body: favorites } = await request(server)
+        .get('/api/favorites')
+        .set('Authorization', token);
+
+      expect(status).toBe(201);
+      expect(favorites.results).toHaveLength(2);
+      expect(favorites.results).toEqual(
+        expect.arrayContaining([favoriteTool1, favoriteTool2])
+      );
     });
   });
 
@@ -127,9 +162,7 @@ describe('favoritesController', () => {
         validFavorite
       } = await setup();
 
-      const {
-        body: createdFavorite
-      } = await request(server)
+      const { body: createdFavorite } = await request(server)
         .post('/api/favorites')
         .set('Authorization', token)
         .send(validFavorite);
@@ -159,9 +192,7 @@ describe('favoritesController', () => {
         validFavorite
       } = await setup();
 
-      const {
-        body: createdFavorite
-      } = await request(server)
+      const { body: createdFavorite } = await request(server)
         .post('/api/favorites')
         .set('Authorization', token)
         .send(validFavorite);
