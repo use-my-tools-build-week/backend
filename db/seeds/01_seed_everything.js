@@ -10,6 +10,16 @@ const randomItem = array => {
   return array[Math.floor(Math.random() * array.length)];
 };
 
+const avatarPics = [
+  'https://res.cloudinary.com/duo8ab7zz/image/upload/v1555662505/5.png',
+  'https://res.cloudinary.com/duo8ab7zz/image/upload/v1555662502/6.png',
+  'https://res.cloudinary.com/duo8ab7zz/image/upload/v1555662499/7.png',
+  'https://res.cloudinary.com/duo8ab7zz/image/upload/v1555662495/8.png',
+  'https://res.cloudinary.com/duo8ab7zz/image/upload/v1555662492/9.png',
+  'https://res.cloudinary.com/duo8ab7zz/image/upload/v1555662489/10.png',
+  'https://res.cloudinary.com/duo8ab7zz/image/upload/v1555662485/11.png'
+];
+
 exports.seed = async (knex, Promise) => {
   const users = [];
 
@@ -18,7 +28,7 @@ exports.seed = async (knex, Promise) => {
     users.push({
       firstname: faker.name.firstName(),
       lastname: faker.name.lastName(),
-      img_url: faker.image.avatar(200, 200),
+      img_url: randomItem(avatarPics),
       email: `test${i}@test.com`,
       loan_range: faker.random.number({ min: 1, max: 100 }),
       address: [
@@ -37,7 +47,7 @@ exports.seed = async (knex, Promise) => {
     users.push({
       firstname: faker.name.firstName(),
       lastname: faker.name.lastName(),
-      img_url: faker.image.avatar(200, 200),
+      img_url: randomItem(avatarPics),
       email: faker.internet.email(),
       loan_range: faker.random.number({ min: 1, max: 100 }),
       address: [
